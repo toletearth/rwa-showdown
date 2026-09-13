@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RWA SHOWDOWN</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@font-face {
+  font-family: 'Anton';
+  src: local('Anton');
+}
+@import url('https://fonts.cdnfonts.com/css/anton');
+@import url('https://fonts.cdnfonts.com/css/inter');
+
+:root{
+  --bg: #0b0c0f;
+  --bg2: #141519;
+  --steel: #3a3d44;
+  --steel-line: #2a2c31;
+  --blood: #c22a1e;
+  --gold: #d4a72c;
+  --ice: #5fd0e8;
+  --off: #e9e6df;
+  --dim: #9a9a9f;
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+
+body{
+  background: radial-gradient(ellipse at 50% -10%, #1c1e24 0%, var(--bg) 55%);
+  color: var(--off);
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+.crowd-glow{
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(194,42,30,0.08), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(95,208,232,0.06), transparent 40%);
+}
+
+.wrap{ position:relative; z-index:1; max-width:900px; margin:0 auto; padding: 18px 14px 40px; }
+
+/* HEADER */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 6px 4px 16px;
+  border-bottom: 1px solid var(--steel-line);
+  margin-bottom: 18px;
+}
+.brand{
+  font-family:'Anton', 'Arial Narrow', sans-serif;
+  font-size: 26px;
+  letter-spacing: 1px;
+  color: var(--off);
+}
+.brand span{ color: var(--blood); }
+.subbrand{ font-size:11px; color:var(--dim); letter-spacing:2px; margin-top:-2px;}
+
+/* SCREENS */
+.screen{ display:none; }
+.screen.active{ display:block; animation: fadeIn .35s ease; }
+@keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+/* START SCREEN */
+.hero{
+  text-align:center;
+  padding: 30px 10px 10px;
+}
+.hero h1{
+  font-family:'Anton', sans-serif;
+  font-size: clamp(34px, 9vw, 56px);
+  line-height:0.95;
+  letter-spacing: 1px;
+}
+.hero h1 .accent{ color: var(--blood); }
+.hero p{ color:var(--dim); margin-top:10px; font-size:14px; max-width:420px; margin-left:auto; margin-right:auto;}
+
+.mode-grid{
+  display:grid; grid-template-columns: 1fr 1fr; gap:12px;
+  margin: 26px 0 8px;
+}
+.mode-card{
+  background: var(--bg2);
+  border: 1px solid var(--steel-line);
+  border-radius: 4px;
+  padding: 18px 14px;
+  cursor:pointer;
+  transition: border-color .15s, transform .1s;
+  text-align:left;
+}
+.mode-card:hover{ border-color: var(--gold); transform: translateY(-2px); }
+.mode-card.selected{ border-color: var(--blood); box-shadow: 0 0 0 1px var(--blood) inset; }
+.mode-card h3{ font-family:'Anton', sans-serif; font-size:17px; letter-spacing:0.5px; margin-bottom:4px;}
+.mode-card p{ font-size:12px; color:var(--dim); line-height:1.4; }
+
+.rules-strip{
+  margin-top: 22px;
+  background: var(--bg2);
+  border: 1px solid var(--steel-line);
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-size:12.5px;
+  color: var(--dim);
+  line-height:1.6;
+}
+.rules-strip b{ color:var(--off); }
+
+.btn{
+  display:inline-block;
+  font-family:'Anton', sans-serif;
+  letter-spacing: 1px;
+  font-size:16px;
+  padding: 14px 28px;
+  background: var(--blood);
+  color: #fff;
+  border:none;
+  border-radius: 3px;
+  cursor:pointer;
+  width:100%;
+  margin-top:20px;
+  transition: filter .12s, transform .08s;
+}
+.btn:hover{ filter:brightness(1.12); }
+.btn:active{ transform: scale(0.98); }
+.btn.ghost{
+  background:transparent; border:1px solid var(--steel); color:var(--off);
+}
+.btn:disabled{ opacity:0.35; cursor:not-allowed; }
+
+/* ARENA SCREEN */
+.scoreboard{
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:12px; color:var(--dim); margin-bottom: 14px; letter-spacing:0.5px;
+}
+.scoreboard .pill{
+  background:var(--bg2); border:1px solid var(--steel-line); border-radius:20px;
+  padding:5px 12px; font-weight:600; color:var(--off);
+}
+.scoreboard .pill.turn{ border-color: var(--gold); color: var(--gold); }
+
+.arena{
+  display:grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items:start;
+}
+.vs-medal{
+  font-family:'Anton', sans-serif; font-size:20px; color:var(--dim);
+  align-self:center; padding-top: 90px;
+}
+
+.slot{ text-align:center; }
+.slot-label{ font-size:11px; letter-spacing:2px; color:var(--dim); margin-bottom:8px; text-transform:uppercase;}
+
+.card3d{
+  width:100%; max-width: 230px; margin:0 auto;
+  aspect-ratio: 2/3;
+  border-radius: 8px;
+  overflow:hidden;
+  position:relative;
+  background: var(--bg2);
+  border: 1px solid var(--steel-line);
+  transform-style:preserve-3d;
+  transition: transform .5s;
+}
+.card3d.flipped{ transform: rotateY(180deg); }
+.card-face{
+  position:absolute; inset:0; backface-visibility:hidden;
+  display:flex; flex-direction:column;
+}
+.card-back{
+  background: repeating-linear-gradient(45deg, #1a1c21, #1a1c21 10px, #202226 10px, #202226 20px);
+  display:flex; align-items:center; justify-content:center;
+}
+.card-back .mark{ font-family:'Anton', sans-serif; color:var(--steel); font-size:34px; letter-spacing:2px; opacity:0.6;}
+.card-front{ transform: rotateY(180deg); }
+.card-front img{ width:100%; height:62%; object-fit:cover; display:block; }
+.card-info{ padding: 8px 10px; flex:1; display:flex; flex-direction:column; justify-content:center;}
+.card-name{ font-family:'Anton', sans-serif; font-size:15px; letter-spacing:0.5px; line-height:1.05;}
+.card-rank{ font-size:10px; color:var(--gold); letter-spacing:1px; margin-top:2px;}
+
+.stat-line{
+  display:flex; justify-content:space-between; font-size:11px; padding: 1px 0; color:var(--dim);
+}
+.stat-line .v{ color:var(--off); font-weight:600; }
+.stat-line.active-cat{ color: var(--ice); }
+.stat-line.active-cat .v{ color: var(--ice); }
+.stat-line.win .v{ color: #6fe38a; }
+.stat-line.lose .v{ color: #d95d55; }
+
+/* CATEGORY PICKER */
+.cat-picker{ margin-top: 22px; }
+.cat-picker-label{ text-align:center; font-size:12px; letter-spacing:1.5px; color:var(--dim); margin-bottom:10px; text-transform:uppercase;}
+.cat-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; }
+.cat-btn{
+  background: var(--bg2); border:1px solid var(--steel-line); color:var(--off);
+  border-radius:4px; padding:10px 6px; font-size:12px; cursor:pointer;
+  display:flex; flex-direction:column; gap:2px; align-items:center;
+  transition: border-color .12s, background .12s;
+}
+.cat-btn .lbl{ color:var(--dim); font-size:10px; letter-spacing:0.5px; text-transform:uppercase;}
+.cat-btn .val{ font-weight:700; font-size:14px; }
+.cat-btn:hover:not(:disabled){ border-color: var(--gold); }
+.cat-btn:disabled{ opacity:0.4; cursor:default; }
+
+/* LOG */
+.log{
+  margin-top:20px; background:var(--bg2); border:1px solid var(--steel-line); border-radius:4px;
+  padding: 12px 14px; font-size:12.5px; color:var(--dim); max-height:110px; overflow-y:auto;
+}
+.log div{ padding:2px 0; }
+.log .hl{ color: var(--off); font-weight:600; }
+.log .win{ color:#6fe38a; }
+.log .lose{ color:#d95d55; }
+.log .tie{ color: var(--gold); }
+
+.result-banner{
+  text-align:center; margin-top:16px; min-height:26px;
+  font-family:'Anton', sans-serif; letter-spacing:1px; font-size:18px;
+}
+.result-banner.win{ color:#6fe38a; }
+.result-banner.lose{ color:#d95d55; }
+.result-banner.tie{ color: var(--gold); }
+
+/* END SCREEN */
+.end-hero{ text-align:center; padding: 40px 10px; }
+.end-hero .trophy{ font-size:50px; }
+.end-hero h2{ font-family:'Anton', sans-serif; font-size:clamp(28px,7vw,42px); margin-top:10px; }
+.end-hero p{ color:var(--dim); margin-top:8px; font-size:14px;}
+
+.footer-note{ text-align:center; color:var(--steel); font-size:11px; margin-top:30px; letter-spacing:1px;}
+</style>
+</head>
+<body>
+<div class="crowd-glow"></div>
+<div class="wrap">
+
+  <div class="topbar">
+    <div>
+      <div class="brand">RWA <span>SHOWDOWN</span></div>
+      <div class="subbrand">RING WARRIORS ALLIANCE · TRUMP CARDS</div>
+    </div>
+  </div>
+
+  <!-- START SCREEN -->
+  <div class="screen active" id="screen-start">
+    <div class="hero">
+      <h1>PICK A STAT.<br><span class="accent">SETTLE IT.</span></h1>
+      <p>All 52 RWA Superstars are in the deck. Every card hides a weapon &mdash; find the number that wins and call it before your rival does.</p>
+    </div>
+
+    <div class="mode-grid">
+      <div class="mode-card" data-mode="ai" onclick="selectMode('ai')">
+        <h3>VS THE HOUSE</h3>
+        <p>Play solo against an AI opponent that picks its best stat every round.</p>
+      </div>
+      <div class="mode-card" data-mode="pvp" onclick="selectMode('pvp')">
+        <h3>PASS &amp; PLAY</h3>
+        <p>Two players, one screen. Hand it over and call your shot.</p>
+      </div>
+    </div>
+
+    <div class="rules-strip">
+      <b>How it works:</b> The deck is split evenly. Each round the active caller picks a category from their top card. Higher card image wins &mdash; except <b>Rank</b>, where lower wins. Winner takes both cards to the bottom of their deck. A tie draws the next card and replays the same category, with everything on the line. Run out of cards, and it's over.
+    </div>
+
+    <button class="btn" id="start-btn" disabled onclick="startGame()">CHOOSE A MODE TO BEGIN</button>
+  </div>
+
+  <!-- ARENA SCREEN -->
+  <div class="screen" id="screen-arena">
+    <div class="scoreboard">
+      <div class="pill" id="p1-pill">YOU — 0</div>
+      <div class="pill" id="turn-pill">&nbsp;</div>
+      <div class="pill" id="p2-pill">RIVAL — 0</div>
+    </div>
+
+    <div class="arena">
+      <div class="slot">
+        <div class="slot-label" id="p1-label">Your Card</div>
+        <div class="card3d" id="card-p1">
+          <div class="card-face card-back"><img src="card-back.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="card-face card-front">
+            <img id="p1-img" src="" alt="">
+            <div class="card-info">
+              <div class="card-name" id="p1-name">—</div>
+              <div class="card-rank" id="p1-rankline">—</div>
+              <div id="p1-stats"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vs-medal">VS</div>
+
+      <div class="slot">
+        <div class="slot-label" id="p2-label">Rival Card</div>
+        <div class="card3d" id="card-p2">
+          <div class="card-face card-back"><img src="card-back.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
+          <div class="card-face card-front">
+            <img id="p2-img" src="" alt="">
+            <div class="card-info">
+              <div class="card-name" id="p2-name">—</div>
+              <div class="card-rank" id="p2-rankline">—</div>
+              <div id="p2-stats"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-banner" id="result-banner">&nbsp;</div>
+
+    <div class="cat-picker">
+      <div class="cat-picker-label" id="picker-label">Choose your category</div>
+      <div class="cat-grid" id="cat-grid"></div>
+    </div>
+
+    <div class="log" id="log"></div>
+  </div>
+
+  <!-- END SCREEN -->
+  <div class="screen" id="screen-end">
+    <div class="end-hero">
+      <div class="trophy">🏆</div>
+      <h2 id="end-title">GAME OVER</h2>
+      <p id="end-sub">—</p>
+      <button class="btn" onclick="resetToStart()">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <div class="footer-note">EVERY CARD HAS A CHANCE</div>
+</div>
+
+<script>
+/* ---------------- DECK DATA ---------------- */
+// Full 52-card RWA roster.
+const MASTER_DECK = [
+  { name: "SHARP EDGE", img: "sharp-edge.jpg", rank: 1, heightIn: 84, heightLabel: "7'0\"", weight: 350, matchesLabel: "999+", matchesVal: 999, biceps: 26, chest: 60 },
+  { name: "CRAZY", img: "crazy.jpg", rank: 2, heightIn: 76, heightLabel: "6'4\"", weight: 275, matchesLabel: "420+", matchesVal: 420, biceps: 22, chest: 50 },
+  { name: "STORM KING", img: "storm-king.jpg", rank: 3, heightIn: 80, heightLabel: "6'8\"", weight: 315, matchesLabel: "612", matchesVal: 612, biceps: 24, chest: 58 },
+  { name: "TITAN ROY", img: "titan-roy.jpg", rank: 4, heightIn: 83, heightLabel: "6'11\"", weight: 340, matchesLabel: "580", matchesVal: 580, biceps: 25, chest: 62 },
+  { name: "SHADOW BLADE", img: "shadow-blade.jpg", rank: 5, heightIn: 75, heightLabel: "6'3\"", weight: 245, matchesLabel: "510", matchesVal: 510, biceps: 22, chest: 50 },
+  { name: "FIRE FANG", img: "fire-fang.jpg", rank: 6, heightIn: 77, heightLabel: "6'5\"", weight: 290, matchesLabel: "500", matchesVal: 500, biceps: 23, chest: 56 },
+  { name: "COLOSSUS", img: "colossus.jpg", rank: 7, heightIn: 84, heightLabel: "7'0\"", weight: 380, matchesLabel: "540", matchesVal: 540, biceps: 28, chest: 64 },
+  { name: "NIGHT HAWK", img: "night-hawk.jpg", rank: 8, heightIn: 78, heightLabel: "6'6\"", weight: 275, matchesLabel: "470", matchesVal: 470, biceps: 21, chest: 52 },
+  { name: "RAGE MONK", img: "rage-monk.jpg", rank: 9, heightIn: 74, heightLabel: "6'2\"", weight: 260, matchesLabel: "480", matchesVal: 480, biceps: 22, chest: 58 },
+  { name: "BLOOD RAZOR", img: "blood-razor.jpg", rank: 10, heightIn: 76, heightLabel: "6'4\"", weight: 300, matchesLabel: "520", matchesVal: 520, biceps: 24, chest: 62 },
+  { name: "STEEL VIPER", img: "steel-viper.jpg", rank: 11, heightIn: 73, heightLabel: "6'1\"", weight: 245, matchesLabel: "460", matchesVal: 460, biceps: 21, chest: 50 },
+  { name: "DESERT WOLF", img: "desert-wolf.jpg", rank: 12, heightIn: 75, heightLabel: "6'3\"", weight: 285, matchesLabel: "430", matchesVal: 430, biceps: 23, chest: 60 },
+  { name: "THUNDER VEER", img: "thunder-veer.jpg", rank: 13, heightIn: 77, heightLabel: "6'5\"", weight: 295, matchesLabel: "500", matchesVal: 500, biceps: 24, chest: 56 },
+  { name: "FROST GIANT", img: "frost-giant.jpg", rank: 14, heightIn: 80, heightLabel: "6'8\"", weight: 365, matchesLabel: "410", matchesVal: 410, biceps: 26, chest: 68 },
+  { name: "BLAZE RIDER", img: "blaze-rider.jpg", rank: 15, heightIn: 74, heightLabel: "6'2\"", weight: 275, matchesLabel: "470", matchesVal: 470, biceps: 22, chest: 58 },
+  { name: "KILL SWITCH", img: "kill-switch.jpg", rank: 16, heightIn: 76, heightLabel: "6'4\"", weight: 310, matchesLabel: "455", matchesVal: 455, biceps: 26, chest: 62 },
+  { name: "MAD DOGG", img: "mad-dogg.jpg", rank: 17, heightIn: 73, heightLabel: "6'1\"", weight: 260, matchesLabel: "420", matchesVal: 420, biceps: 24, chest: 58 },
+  { name: "DARK PHOENIX", img: "dark-phoenix.jpg", rank: 18, heightIn: 69, heightLabel: "5'9\"", weight: 140, matchesLabel: "390", matchesVal: 390, biceps: 12, chest: 34 },
+  { name: "GRAVE DIGGER", img: "grave-digger.jpg", rank: 19, heightIn: 78, heightLabel: "6'6\"", weight: 330, matchesLabel: "380", matchesVal: 380, biceps: 25, chest: 64 },
+  { name: "THE APEX", img: "the-apex.jpg", rank: 20, heightIn: 80, heightLabel: "6'8\"", weight: 355, matchesLabel: "365", matchesVal: 365, biceps: 27, chest: 68 },
+  { name: "VOLT MAX", img: "volt-max.jpg", rank: 21, heightIn: 75, heightLabel: "6'3\"", weight: 290, matchesLabel: "410", matchesVal: 410, biceps: 24, chest: 52 },
+  { name: "BEAST MODE", img: "beast-mode.jpg", rank: 22, heightIn: 79, heightLabel: "6'7\"", weight: 380, matchesLabel: "405", matchesVal: 405, biceps: 28, chest: 70 },
+  { name: "CRIMSON TIDE", img: "crimson-tide.jpg", rank: 23, heightIn: 70, heightLabel: "5'10\"", weight: 150, matchesLabel: "340", matchesVal: 340, biceps: 12, chest: 34 },
+  { name: "SAMURAI KAI", img: "samurai-kai.jpg", rank: 24, heightIn: 73, heightLabel: "6'1\"", weight: 275, matchesLabel: "310", matchesVal: 310, biceps: 21, chest: 50 },
+  { name: "MOUNTAIN MAN", img: "mountain-man.jpg", rank: 25, heightIn: 82, heightLabel: "6'10\"", weight: 420, matchesLabel: "280", matchesVal: 280, biceps: 26, chest: 64 },
+  { name: "PURPLES VENOM", img: "purple-venom.jpg", rank: 26, heightIn: 76, heightLabel: "6'4\"", weight: 310, matchesLabel: "295", matchesVal: 295, biceps: 24, chest: 56 },
+  { name: "PSYCHO RAY", img: "psycho-ray.jpg", rank: 27, heightIn: 75, heightLabel: "6'3\"", weight: 290, matchesLabel: "260", matchesVal: 260, biceps: 23, chest: 50 },
+  { name: "THE HAMMER", img: "the-hammer.jpg", rank: 28, heightIn: 80, heightLabel: "6'8\"", weight: 380, matchesLabel: "270", matchesVal: 270, biceps: 26, chest: 60 },
+  { name: "SOUL TAKER", img: "soul-taker.jpg", rank: 29, heightIn: 78, heightLabel: "6'6\"", weight: 330, matchesLabel: "265", matchesVal: 265, biceps: 25, chest: 58 },
+  { name: "DRAGON SOUL", img: "dragon-soul.jpg", rank: 30, heightIn: 75, heightLabel: "6'3\"", weight: 310, matchesLabel: "275", matchesVal: 275, biceps: 25, chest: 54 },
+  { name: "STEAL FIRE DRAGON", img: "steal-fire-dragon.jpg", rank: 31, heightIn: 79, heightLabel: "6'7\"", weight: 360, matchesLabel: "285", matchesVal: 285, biceps: 26, chest: 62 },
+  { name: "WILD CARD", img: "wild-card.jpg", rank: 32, heightIn: 76, heightLabel: "6'4\"", weight: 300, matchesLabel: "250", matchesVal: 250, biceps: 24, chest: 56 },
+  { name: "NOVA", img: "nova.jpg", rank: 33, heightIn: 73, heightLabel: "6'1\"", weight: 210, matchesLabel: "240", matchesVal: 240, biceps: 17, chest: 48 },
+  { name: "HARD KNOX", img: "hard-knox.jpg", rank: 34, heightIn: 80, heightLabel: "6'8\"", weight: 380, matchesLabel: "230", matchesVal: 230, biceps: 26, chest: 64 },
+  { name: "FALCON STRIKE", img: "falcon-strike.jpg", rank: 35, heightIn: 74, heightLabel: "6'2\"", weight: 220, matchesLabel: "260", matchesVal: 260, biceps: 20, chest: 48 },
+  { name: "BULLET PROOF", img: "bullet-proof.jpg", rank: 36, heightIn: 73, heightLabel: "6'1\"", weight: 205, matchesLabel: "210", matchesVal: 210, biceps: 22, chest: 52 },
+  { name: "TANK", img: "tank.jpg", rank: 37, heightIn: 77, heightLabel: "6'5\"", weight: 400, matchesLabel: "220", matchesVal: 220, biceps: 26, chest: 60 },
+  { name: "ZERO FEAR", img: "zero-fear.jpg", rank: 38, heightIn: 73, heightLabel: "6'1\"", weight: 215, matchesLabel: "210", matchesVal: 210, biceps: 20, chest: 48 },
+  { name: "PHANTOM", img: "phantom.jpg", rank: 39, heightIn: 72, heightLabel: "6'0\"", weight: 210, matchesLabel: "240", matchesVal: 240, biceps: 21, chest: 50 },
+  { name: "THE REBEL", img: "the-rebel.jpg", rank: 40, heightIn: 74, heightLabel: "6'2\"", weight: 220, matchesLabel: "200", matchesVal: 200, biceps: 22, chest: 50 },
+  { name: "LADY STORM", img: "lady-storm.jpg", rank: 41, heightIn: 68, heightLabel: "5'8\"", weight: 135, matchesLabel: "180", matchesVal: 180, biceps: 14, chest: 34 },
+  { name: "FIRE VIXEN", img: "fire-vixen.jpg", rank: 42, heightIn: 67, heightLabel: "5'7\"", weight: 125, matchesLabel: "185", matchesVal: 185, biceps: 13, chest: 33 },
+  { name: "DIAMOND ROSE", img: "diamond-rose.jpg", rank: 43, heightIn: 66, heightLabel: "5'6\"", weight: 120, matchesLabel: "175", matchesVal: 175, biceps: 12, chest: 34 },
+  { name: "SHADOW QUEEN", img: "shadow-queen.jpg", rank: 44, heightIn: 68, heightLabel: "5'8\"", weight: 130, matchesLabel: "170", matchesVal: 170, biceps: 13, chest: 34 },
+  { name: "VELVET BLAZE", img: "velvet-blaze.jpg", rank: 45, heightIn: 67, heightLabel: "5'7\"", weight: 128, matchesLabel: "160", matchesVal: 160, biceps: 13, chest: 33 },
+  { name: "ICE ANGEL HULK", img: "ice-angel-hulk.jpg", rank: 46, heightIn: 77, heightLabel: "6'5\"", weight: 265, matchesLabel: "190", matchesVal: 190, biceps: 20, chest: 52 },
+  { name: "LONG SHOT", img: "long-shot.jpg", rank: 47, heightIn: 71, heightLabel: "5'11\"", weight: 185, matchesLabel: "90", matchesVal: 90, biceps: 15, chest: 42 },
+  { name: "TIGER LILY", img: "tiger-lily.jpg", rank: 48, heightIn: 68, heightLabel: "5'8\"", weight: 132, matchesLabel: "88", matchesVal: 88, biceps: 13, chest: 34 },
+  { name: "SCARLET", img: "scarlet.jpg", rank: 49, heightIn: 67, heightLabel: "5'7\"", weight: 135, matchesLabel: "120", matchesVal: 120, biceps: 12, chest: 34 },
+  { name: "MOON CHILD", img: "moon-child.jpg", rank: 50, heightIn: 66, heightLabel: "5'6\"", weight: 128, matchesLabel: "110", matchesVal: 110, biceps: 12, chest: 32 },
+  { name: "DWARF BOY", img: "dwarf-boy.jpg", rank: 51, heightIn: 42, heightLabel: "3'6\"", weight: 68, matchesLabel: "75", matchesVal: 75, biceps: 11, chest: 28 },
+  { name: "SOLDIER GIRL", img: "soldier-girl.jpg", rank: 52, heightIn: 66, heightLabel: "5'6\"", weight: 125, matchesLabel: "82", matchesVal: 82, biceps: 12, chest: 34 }
+];
+
+const CATEGORIES = [
+  { key: "rank",    label: "Rank",    unit: "",     lowerWins: true,  getVal: c => c.rank,        getDisplay: c => "#"+c.rank },
+  { key: "height",  label: "Height",  unit: "",     lowerWins: false, getVal: c => c.heightIn,    getDisplay: c => c.heightLabel },
+  { key: "weight",  label: "Weight",  unit: "lbs",  lowerWins: false, getVal: c => c.weight,      getDisplay: c => c.weight + " lbs" },
+  { key: "matches", label: "Matches", unit: "",     lowerWins: false, getVal: c => c.matchesVal,  getDisplay: c => c.matchesLabel },
+  { key: "biceps",  label: "Biceps",  unit: "in",   lowerWins: false, getVal: c => c.biceps,      getDisplay: c => c.biceps + '"' },
+  { key: "chest",   label: "Chest",   unit: "in",   lowerWins: false, getVal: c => c.chest,       getDisplay: c => c.chest + '"' }
+];
+
+/* ---------------- STATE ---------------- */
+let state = {
+  mode: null,          // 'ai' | 'pvp'
+  p1Deck: [],
+  p2Deck: [],
+  pot: [],
+  turn: 1,             // which player calls the category this round
+  awaitingReveal: false,
+  gameOver: false
+};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function selectMode(m){
+  state.mode = m;
+  document.querySelectorAll('.mode-card').forEach(el=>el.classList.remove('selected'));
+  document.querySelector('.mode-card[data-mode="'+m+'"]').classList.add('selected');
+  const btn = document.getElementById('start-btn');
+  btn.disabled = false;
+  btn.textContent = m === 'ai' ? "FACE THE HOUSE" : "START PASS & PLAY";
+  document.getElementById('p2-label').textContent = m === 'ai' ? 'Rival Card' : "Player 2's Card";
+  document.getElementById('p2-pill').textContent = (m === 'ai' ? 'RIVAL' : 'P2') + ' — 0';
+}
+
+function startGame(){
+  const shuffled = shuffle(MASTER_DECK);
+  state.p1Deck = [];
+  state.p2Deck = [];
+  shuffled.forEach((c,i)=>{
+    if(i % 2 === 0) state.p1Deck.push(c); else state.p2Deck.push(c);
+  });
+  state.pot = [];
+  state.turn = Math.random() < 0.5 ? 1 : 2;
+  state.gameOver = false;
+
+  showScreen('arena');
+  renderRound();
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+}
+
+/* ---------------- RENDER ---------------- */
+function fillCardFace(prefix, card){
+  document.getElementById(prefix+'-img').src = card.img;
+  document.getElementById(prefix+'-name').textContent = card.name;
+  document.getElementById(prefix+'-rankline').textContent = "RWA SUPERSTAR";
+  const statsEl = document.getElementById(prefix+'-stats');
+  statsEl.innerHTML = '';
+  CATEGORIES.forEach(cat=>{
+    const row = document.createElement('div');
+    row.className = 'stat-line';
+    row.id = prefix+'-stat-'+cat.key;
+    row.innerHTML = '<span>'+cat.label+'</span><span class="v">'+cat.getDisplay(card)+'</span>';
+    statsEl.appendChild(row);
+  });
+}
+
+function renderRound(){
+  document.getElementById('card-p1').classList.remove('flipped');
+  document.getElementById('card-p2').classList.remove('flipped');
+  document.getElementById('result-banner').textContent = '\u00A0';
+  document.getElementById('result-banner').className = 'result-banner';
+
+  document.getElementById('p1-pill').textContent = 'YOU — ' + state.p1Deck.length;
+  document.getElementById('p2-pill').textContent = (state.mode==='ai'?'RIVAL':'P2') + ' — ' + state.p2Deck.length;
+
+  if(state.p1Deck.length === 0 || state.p2Deck.length === 0){
+    endGame();
+    return;
+  }
+
+  const c1 = state.p1Deck[0];
+  const c2 = state.p2Deck[0];
+  fillCardFace('p1', c1);
+  fillCardFace('p2', c2);
+
+  const callerIsP1 = state.turn === 1;
+  document.getElementById('turn-pill').textContent = callerIsP1
+    ? "YOU CALL IT"
+    : (state.mode === 'ai' ? "RIVAL IS THINKING…" : "P2 CALLS IT");
+  document.getElementById('turn-pill').classList.toggle('turn', true);
+
+  document.getElementById('picker-label').textContent = callerIsP1
+    ? "Choose a category from your card"
+    : (state.mode === 'ai' ? "Rival is choosing…" : "Player 2 — hide the screen, then choose");
+
+  renderCatGrid(callerIsP1, c1);
+
+  if(!callerIsP1 && state.mode === 'ai'){
+    setTimeout(()=> aiPick(c2), 700);
+  }
+}
+
+function renderCatGrid(interactive, refCard){
+  const grid = document.getElementById('cat-grid');
+  grid.innerHTML = '';
+  CATEGORIES.forEach(cat=>{
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn';
+    btn.disabled = !interactive;
+    btn.innerHTML = '<span class="lbl">'+cat.label+'</span><span class="val">'+cat.getDisplay(refCard)+'</span>';
+    btn.onclick = ()=> playCategory(cat.key);
+    grid.appendChild(btn);
+  });
+}
+
+/* ---------------- GAME LOGIC ---------------- */
+function aiPick(aiCard){
+  // pick the category where the AI's card is most favorable
+  let best = null, bestScore = -Infinity;
+  CATEGORIES.forEach(cat=>{
+    const val = cat.getVal(aiCard);
+    const score = cat.lowerWins ? -val : val;
+    // normalize roughly by category scale so ranks (small numbers) don't dominate
+    const norm = score / (cat.key==='rank' ? 1 : (cat.key==='weight' ? 10 : (cat.key==='matches'?10:1)));
+    if(norm > bestScore){ bestScore = norm; best = cat.key; }
+  });
+  playCategory(best);
+}
+
+function playCategory(catKey){
+  if(state.awaitingReveal) return;
+  state.awaitingReveal = true;
+
+  const cat = CATEGORIES.find(c=>c.key===catKey);
+  const c1 = state.p1Deck[0];
+  const c2 = state.p2Deck[0];
+
+  // disable further picks during reveal
+  document.querySelectorAll('.cat-btn').forEach(b=>b.disabled = true);
+  document.getElementById('picker-label').textContent = 'Category: ' + cat.label;
+
+  document.getElementById('card-p1').classList.add('flipped');
+  document.getElementById('card-p2').classList.add('flipped');
+
+  setTimeout(()=> resolveRound(cat, c1, c2), 550);
+}
+
+function resolveRound(cat, c1, c2){
+  const v1 = cat.getVal(c1);
+  const v2 = cat.getVal(c2);
+  let outcome; // 1, 2, or 'tie'
+  if(v1 === v2) outcome = 'tie';
+  else if(cat.lowerWins) outcome = v1 < v2 ? 1 : 2;
+  else outcome = v1 > v2 ? 1 : 2;
+
+  highlightStat('p1', cat.key, outcome===1?'win':(outcome===2?'lose':'tie'));
+  highlightStat('p2', cat.key, outcome===2?'win':(outcome===1?'lose':'tie'));
+
+  const banner = document.getElementById('result-banner');
+
+  if(outcome === 'tie'){
+    banner.textContent = "TIE! Cards go to the pot — next round decides all.";
+    banner.classList.add('tie');
+    state.pot.push(state.p1Deck.shift(), state.p2Deck.shift());
+    logLine('<span class="tie">TIE</span> on '+cat.label+' ('+cat.getDisplay(c1)+') — pot now holds '+state.pot.length+' cards.');
+    state.awaitingReveal = false;
+    setTimeout(renderRound, 1100);
+    return;
+  }
+
+  const winnerIsP1 = outcome === 1;
+  banner.textContent = winnerIsP1
+    ? c1.name + " WINS the round!"
+    : c2.name + " WINS the round!";
+  banner.classList.add(winnerIsP1 ? 'win' : 'lose');
+
+  const wonCards = [state.p1Deck.shift(), state.p2Deck.shift(), ...state.pot];
+  state.pot = [];
+  const potNote = wonCards.length > 2 ? ' + '+(wonCards.length-2)+' pot card(s)' : '';
+
+  if(winnerIsP1){
+    state.p1Deck.push(...shuffle(wonCards));
+    state.turn = 1;
+    logLine('<span class="win">' + c1.name + '</span> beat ' + c2.name + ' on ' + cat.label + ' ('+cat.getDisplay(c1)+' vs '+cat.getDisplay(c2)+')'+potNote+'.');
+  } else {
+    state.p2Deck.push(...shuffle(wonCards));
+    state.turn = 2;
+    logLine('<span class="lose">' + c2.name + '</span> beat ' + c1.name + ' on ' + cat.label + ' ('+cat.getDisplay(c2)+' vs '+cat.getDisplay(c1)+')'+potNote+'.');
+  }
+
+  state.awaitingReveal = false;
+  setTimeout(renderRound, 1300);
+}
+
+function highlightStat(prefix, catKey, cls){
+  const el = document.getElementById(prefix+'-stat-'+catKey);
+  if(el){ el.classList.add('active-cat', cls); }
+}
+
+function logLine(html){
+  const log = document.getElementById('log');
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  log.prepend(div);
+}
+
+function endGame(){
+  state.gameOver = true;
+  showScreen('end');
+  const p1Won = state.p1Deck.length > 0;
+  const label2 = state.mode === 'ai' ? 'the Rival' : 'Player 2';
+  document.getElementById('end-title').textContent = p1Won ? "YOU TAKE THE DECK" : (state.mode==='ai' ? "THE HOUSE WINS" : "PLAYER 2 TAKES IT");
+  document.getElementById('end-sub').textContent = p1Won
+    ? "You hold all "+MASTER_DECK.length+" cards. "+label2+" has nothing left to call."
+    : label2 + " holds all " + MASTER_DECK.length + " cards. Run it back?";
+}
+
+function resetToStart(){
+  document.getElementById('log').innerHTML = '';
+  showScreen('start');
+}
+</script>
+</body>
+</html>
