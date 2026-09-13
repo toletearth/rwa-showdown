@@ -500,7 +500,7 @@ function renderRound(){
   renderCatGrid(callerIsP1, c1);
 
   if(!callerIsP1 && state.mode === 'ai'){
-    setTimeout(()=> aiPick(c2), 700);
+    setTimeout(()=> aiPick(c2), 1800);
   }
 }
 
@@ -546,7 +546,7 @@ function playCategory(catKey){
   document.getElementById('card-p1').classList.add('flipped');
   document.getElementById('card-p2').classList.add('flipped');
 
-  setTimeout(()=> resolveRound(cat, c1, c2), 550);
+  setTimeout(()=> resolveRound(cat, c1, c2), 750);
 }
 
 function resolveRound(cat, c1, c2){
@@ -568,7 +568,7 @@ function resolveRound(cat, c1, c2){
     state.pot.push(state.p1Deck.shift(), state.p2Deck.shift());
     logLine('<span class="tie">TIE</span> on '+cat.label+' ('+cat.getDisplay(c1)+') — pot now holds '+state.pot.length+' cards.');
     state.awaitingReveal = false;
-    setTimeout(renderRound, 1100);
+    setTimeout(renderRound, 2400);
     return;
   }
 
@@ -593,7 +593,7 @@ function resolveRound(cat, c1, c2){
   }
 
   state.awaitingReveal = false;
-  setTimeout(renderRound, 1300);
+  setTimeout(renderRound, 3000);
 }
 
 function highlightStat(prefix, catKey, cls){
