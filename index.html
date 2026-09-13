@@ -176,19 +176,22 @@ body{
 .card-back .mark{ font-family:'Anton', sans-serif; color:var(--steel); font-size:34px; letter-spacing:2px; opacity:0.6;}
 .card3d.flipped .card-back{ opacity:0; z-index:1; transform: scaleX(0.85); }
 .card3d.flipped .card-front{ opacity:1; z-index:2; transform: scaleX(1); }
-.card-front img{ width:100%; height:62%; object-fit:cover; display:block; }
-.card-info{ padding: 8px 10px; flex:1; display:flex; flex-direction:column; justify-content:center;}
-.card-name{ font-family:'Anton', sans-serif; font-size:15px; letter-spacing:0.5px; line-height:1.05;}
-.card-rank{ font-size:10px; color:var(--gold); letter-spacing:1px; margin-top:2px;}
+.card-front img{ width:100%; height:100%; object-fit:contain; display:block; }
 
-.stat-line{
-  display:flex; justify-content:space-between; font-size:11px; padding: 1px 0; color:var(--dim);
+.stat-highlight{
+  position:absolute;
+  left:65.5%; width:32%;
+  border-radius:5px;
+  border:2px solid transparent;
+  background:rgba(0,0,0,0);
+  opacity:0;
+  transition: opacity .3s ease, border-color .3s ease, background .3s ease;
+  pointer-events:none;
 }
-.stat-line .v{ color:var(--off); font-weight:600; }
-.stat-line.active-cat{ color: var(--ice); }
-.stat-line.active-cat .v{ color: var(--ice); }
-.stat-line.win .v{ color: #6fe38a; }
-.stat-line.lose .v{ color: #d95d55; }
+.stat-highlight.show{ opacity:1; }
+.stat-highlight.win{ border-color:#6fe38a; background:rgba(111,227,138,0.28); box-shadow:0 0 14px rgba(111,227,138,0.65); }
+.stat-highlight.lose{ border-color:#d95d55; background:rgba(217,93,85,0.28); box-shadow:0 0 14px rgba(217,93,85,0.65); }
+.stat-highlight.tie{ border-color:#d4a72c; background:rgba(212,167,44,0.28); box-shadow:0 0 14px rgba(212,167,44,0.65); }
 
 /* CATEGORY PICKER */
 .cat-picker{ margin-top: 22px; }
@@ -284,11 +287,7 @@ body{
           <div class="card-face card-back"><img src="card-back.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
           <div class="card-face card-front">
             <img id="p1-img" src="" alt="">
-            <div class="card-info">
-              <div class="card-name" id="p1-name">—</div>
-              <div class="card-rank" id="p1-rankline">—</div>
-              <div id="p1-stats"></div>
-            </div>
+            <div class="stat-highlight" id="p1-highlight"></div>
           </div>
         </div>
       </div>
@@ -301,11 +300,7 @@ body{
           <div class="card-face card-back"><img src="card-back.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
           <div class="card-face card-front">
             <img id="p2-img" src="" alt="">
-            <div class="card-info">
-              <div class="card-name" id="p2-name">—</div>
-              <div class="card-rank" id="p2-rankline">—</div>
-              <div id="p2-stats"></div>
-            </div>
+            <div class="stat-highlight" id="p2-highlight"></div>
           </div>
         </div>
       </div>
@@ -401,6 +396,17 @@ const CATEGORIES = [
   { key: "chest",   label: "Chest",   unit: "in",   lowerWins: false, getVal: c => c.chest,       getDisplay: c => c.chest + '"' }
 ];
 
+// Pixel-calibrated stat box positions on the card artwork (% of card height).
+// Every card in the deck shares this exact template layout.
+const STAT_BOX = {
+  rank:    { top: 3.5,  bottom: 16 },
+  height:  { top: 26,   bottom: 34.5 },
+  weight:  { top: 34.5, bottom: 42.5 },
+  matches: { top: 42.5, bottom: 52.5 },
+  biceps:  { top: 52.5, bottom: 60 },
+  chest:   { top: 60,   bottom: 67.5 }
+};
+
 /* ---------------- STATE ---------------- */
 let state = {
   mode: null,          // 'ai' | 'pvp'
@@ -455,17 +461,8 @@ function showScreen(id){
 /* ---------------- RENDER ---------------- */
 function fillCardFace(prefix, card){
   document.getElementById(prefix+'-img').src = card.img;
-  document.getElementById(prefix+'-name').textContent = card.name;
-  document.getElementById(prefix+'-rankline').textContent = "RWA SUPERSTAR";
-  const statsEl = document.getElementById(prefix+'-stats');
-  statsEl.innerHTML = '';
-  CATEGORIES.forEach(cat=>{
-    const row = document.createElement('div');
-    row.className = 'stat-line';
-    row.id = prefix+'-stat-'+cat.key;
-    row.innerHTML = '<span>'+cat.label+'</span><span class="v">'+cat.getDisplay(card)+'</span>';
-    statsEl.appendChild(row);
-  });
+  const hl = document.getElementById(prefix+'-highlight');
+  hl.className = 'stat-highlight'; // reset to hidden, no color
 }
 
 function renderRound(){
@@ -597,8 +594,12 @@ function resolveRound(cat, c1, c2){
 }
 
 function highlightStat(prefix, catKey, cls){
-  const el = document.getElementById(prefix+'-stat-'+catKey);
-  if(el){ el.classList.add('active-cat', cls); }
+  const el = document.getElementById(prefix+'-highlight');
+  if(!el) return;
+  const box = STAT_BOX[catKey];
+  el.style.top = box.top + '%';
+  el.style.height = (box.bottom - box.top) + '%';
+  el.className = 'stat-highlight show ' + cls;
 }
 
 function logLine(html){
