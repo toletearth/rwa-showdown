@@ -5,10 +5,6 @@
 <title>RWA SHOWDOWN</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-@font-face {
-  font-family: 'Anton';
-  src: local('Anton');
-}
 @import url('https://fonts.cdnfonts.com/css/anton');
 @import url('https://fonts.cdnfonts.com/css/inter');
 
@@ -23,9 +19,7 @@
   --off: #e9e6df;
   --dim: #9a9a9f;
 }
-
 *{box-sizing:border-box; margin:0; padding:0;}
-
 body{
   background: radial-gradient(ellipse at 50% -10%, #1c1e24 0%, var(--bg) 55%);
   color: var(--off);
@@ -33,159 +27,160 @@ body{
   min-height:100vh;
   overflow-x:hidden;
 }
-
 .crowd-glow{
   position:fixed; inset:0; pointer-events:none; z-index:0;
   background:
     radial-gradient(circle at 15% 20%, rgba(194,42,30,0.08), transparent 40%),
     radial-gradient(circle at 85% 80%, rgba(95,208,232,0.06), transparent 40%);
 }
+.wrap{ position:relative; z-index:1; max-width:600px; margin:0 auto; padding: 12px 14px 40px; }
 
-.wrap{ position:relative; z-index:1; max-width:900px; margin:0 auto; padding: 18px 14px 40px; }
-
-/* HEADER */
-.topbar{
-  display:flex; align-items:center; justify-content:space-between;
-  padding: 6px 4px 16px;
-  border-bottom: 1px solid var(--steel-line);
-  margin-bottom: 18px;
-}
-.brand{
-  font-family:'Anton', 'Arial Narrow', sans-serif;
-  font-size: 26px;
-  letter-spacing: 1px;
-  color: var(--off);
-}
-.brand span{ color: var(--blood); }
-.subbrand{ font-size:11px; color:var(--dim); letter-spacing:2px; margin-top:-2px;}
+/* TOP APP BAR */
+.topbar-app{ display:flex; align-items:center; justify-content:space-between; padding:8px 2px 14px; }
+body.hide-topbar .topbar-app{ display:none; }
+.tb-left{ display:flex; align-items:center; gap:10px; cursor:pointer; }
+.tb-avatar{ width:38px;height:38px;border-radius:50%; background:var(--bg2); border:2px solid var(--gold); display:flex;align-items:center;justify-content:center; font-family:'Anton',sans-serif; color:var(--gold); font-size:16px; flex-shrink:0; }
+.tb-name{ font-size:13px; font-weight:700; color:var(--off); line-height:1.2; }
+.tb-rank{ font-size:10px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; }
+.tb-right{ display:flex; align-items:center; gap:8px; }
+.tb-stat{ display:flex; align-items:center; gap:4px; font-size:12px; font-weight:700; background:var(--bg2); border:1px solid var(--steel-line); padding:5px 9px; border-radius:20px; }
+.tb-gear{ background:none;border:none;font-size:17px;cursor:pointer; color:var(--dim); padding:4px; }
 
 /* SCREENS */
 .screen{ display:none; }
-.screen.active{ display:block; animation: fadeIn .35s ease; }
+.screen.active{ display:block; animation: fadeIn .3s ease; }
 @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
 
-/* START SCREEN */
-.hero{
-  text-align:center;
-  padding: 30px 10px 10px;
-}
-.hero h1{
-  font-family:'Anton', sans-serif;
-  font-size: clamp(34px, 9vw, 56px);
-  line-height:0.95;
-  letter-spacing: 1px;
-}
-.hero h1 .accent{ color: var(--blood); }
-.hero p{ color:var(--dim); margin-top:10px; font-size:14px; max-width:420px; margin-left:auto; margin-right:auto;}
+.subheader{ display:flex; align-items:center; gap:12px; padding:4px 0 18px; }
+.back-btn{ width:34px;height:34px;border-radius:50%; background:var(--bg2); border:1px solid var(--steel-line); color:var(--off); font-size:16px; cursor:pointer; flex-shrink:0; }
+.subheader-title{ font-family:'Anton', sans-serif; font-size:18px; letter-spacing:1px; }
 
-.mode-grid{
-  display:grid; grid-template-columns: 1fr 1fr; gap:12px;
-  margin: 26px 0 8px;
-}
-.mode-card{
-  background: var(--bg2);
-  border: 1px solid var(--steel-line);
-  border-radius: 4px;
-  padding: 18px 14px;
-  cursor:pointer;
-  transition: border-color .15s, transform .1s;
-  text-align:left;
-}
-.mode-card:hover{ border-color: var(--gold); transform: translateY(-2px); }
-.mode-card.selected{ border-color: var(--blood); box-shadow: 0 0 0 1px var(--blood) inset; }
-.mode-card h3{ font-family:'Anton', sans-serif; font-size:17px; letter-spacing:0.5px; margin-bottom:4px;}
-.mode-card p{ font-size:12px; color:var(--dim); line-height:1.4; }
-
-.rules-strip{
-  margin-top: 22px;
-  background: var(--bg2);
-  border: 1px solid var(--steel-line);
-  border-radius: 4px;
-  padding: 14px 16px;
-  font-size:12.5px;
-  color: var(--dim);
-  line-height:1.6;
-}
-.rules-strip b{ color:var(--off); }
+.footer-note{ text-align:center; color:var(--steel); font-size:11px; margin-top:28px; letter-spacing:1px; }
 
 .btn{
-  display:inline-block;
-  font-family:'Anton', sans-serif;
-  letter-spacing: 1px;
-  font-size:16px;
-  padding: 14px 28px;
-  background: var(--blood);
-  color: #fff;
-  border:none;
-  border-radius: 3px;
-  cursor:pointer;
-  width:100%;
-  margin-top:20px;
-  transition: filter .12s, transform .08s;
+  display:block; text-align:center;
+  font-family:'Anton', sans-serif; letter-spacing: 1px; font-size:16px;
+  padding: 14px 28px; background: var(--blood); color: #fff; border:none; border-radius: 4px;
+  cursor:pointer; width:100%; transition: filter .12s, transform .08s;
 }
 .btn:hover{ filter:brightness(1.12); }
 .btn:active{ transform: scale(0.98); }
-.btn.ghost{
-  background:transparent; border:1px solid var(--steel); color:var(--off);
-}
-.btn:disabled{ opacity:0.35; cursor:not-allowed; }
+.btn.ghost{ background:var(--bg2); border:1px solid var(--steel-line); color:var(--off); }
+.btn + .btn{ margin-top:10px; }
 
-/* ARENA SCREEN */
-.scoreboard{
-  display:flex; justify-content:space-between; align-items:center;
-  font-size:12px; color:var(--dim); margin-bottom: 14px; letter-spacing:0.5px;
-}
-.scoreboard .pill{
-  background:var(--bg2); border:1px solid var(--steel-line); border-radius:20px;
-  padding:5px 12px; font-weight:600; color:var(--off);
-}
-.scoreboard .pill.turn{ border-color: var(--gold); color: var(--gold); }
+/* MAIN MENU */
+.menu-hero{ position:relative; margin:0 -14px; height:210px; overflow:hidden; }
+.menu-hero img{ width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+.menu-hero-fade{ position:absolute; inset:0; background:linear-gradient(to bottom, rgba(11,12,15,0.1) 35%, var(--bg) 96%); }
+.menu-brand{ text-align:center; margin-top:-46px; position:relative; z-index:2; }
+.brand-big{ font-family:'Anton',sans-serif; font-size:58px; color:var(--gold); text-shadow:0 0 24px rgba(212,167,44,0.45); letter-spacing:2px; line-height:1; }
+.brand-sub{ font-size:12px; letter-spacing:4px; color:var(--off); margin-top:2px; }
+.brand-tagline{ font-size:11px; letter-spacing:3px; color:var(--dim); margin-top:10px; }
+.menu-buttons{ margin-top:28px; }
 
-.arena{
-  display:grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items:start;
-}
-.vs-medal{
-  font-family:'Anton', sans-serif; font-size:20px; color:var(--dim);
-  align-self:center; padding-top: 90px;
-}
+/* MODE SELECT */
+.mode-list{ display:flex; flex-direction:column; gap:12px; }
+.mode-row{ display:flex; align-items:center; gap:14px; background:var(--bg2); border:1px solid var(--steel-line); border-radius:8px; padding:16px; cursor:pointer; transition:border-color .15s, transform .1s; }
+.mode-row:hover{ border-color:var(--gold); transform:translateY(-1px); }
+.mode-row.locked{ opacity:0.4; cursor:default; }
+.mode-row.locked:hover{ border-color:var(--steel-line); transform:none; }
+.mode-row-icon{ font-size:26px; width:34px; text-align:center; flex-shrink:0; }
+.mode-row-text{ flex:1; }
+.mode-row-title{ font-family:'Anton',sans-serif; font-size:16px; letter-spacing:0.5px; }
+.mode-row-sub{ font-size:12px; color:var(--dim); margin-top:1px; }
+.mode-row-arrow{ font-size:20px; color:var(--dim); flex-shrink:0; }
 
+/* COLLECTION */
+.collection-tabs{ display:flex; gap:8px; margin-bottom:12px; }
+.tab{ flex:1; background:var(--bg2); border:1px solid var(--steel-line); color:var(--dim); padding:9px 4px; border-radius:20px; font-size:11px; letter-spacing:0.5px; cursor:pointer; font-weight:700; }
+.tab.active{ background:var(--blood); border-color:var(--blood); color:#fff; }
+.search-box{ width:100%; background:var(--bg2); border:1px solid var(--steel-line); border-radius:8px; padding:11px 14px; color:var(--off); font-size:13px; margin-bottom:14px; }
+.search-box::placeholder{ color:var(--dim); }
+.collection-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding-bottom:20px; }
+.collection-card{ background:var(--bg2); border:1px solid var(--steel-line); border-radius:8px; overflow:hidden; cursor:pointer; position:relative; }
+.collection-card img{ width:100%; aspect-ratio:2/3; object-fit:cover; object-position:top; display:block; }
+.cc-rank{ position:absolute; top:5px; left:5px; background:rgba(0,0,0,0.75); color:var(--gold); font-family:'Anton',sans-serif; font-size:10px; padding:2px 6px; border-radius:4px; }
+.cc-name{ padding:5px 4px; font-size:9.5px; font-weight:700; text-align:center; letter-spacing:0.2px; line-height:1.2; }
+.collection-empty{ text-align:center; color:var(--dim); font-size:13px; padding:30px 0; }
+
+.card-modal{ position:fixed; inset:0; background:rgba(0,0,0,0.88); display:none; align-items:center; justify-content:center; z-index:50; padding:24px; }
+.card-modal.show{ display:flex; }
+.card-modal-inner{ max-width:340px; width:100%; position:relative; }
+.card-modal-inner img{ width:100%; border-radius:10px; display:block; }
+.card-modal-close{ position:absolute; top:-14px; right:-14px; width:32px;height:32px; border-radius:50%; background:var(--blood); color:#fff; border:2px solid var(--bg); font-size:14px; cursor:pointer; z-index:5; }
+.view3d-btn{ margin-top:12px; }
+.viewer3d-inner{ max-width:360px; width:100%; position:relative; background:var(--bg2); border:1px solid var(--steel-line); border-radius:10px; padding:16px; }
+.viewer3d-canvas-wrap{ width:100%; }
+#viewer3d-canvas-wrap{ width:100%; aspect-ratio:1/1; border-radius:8px; overflow:hidden; background:radial-gradient(circle at 50% 30%, #1a2a20, #0b0c0f); touch-action:none; }
+#viewer3d-canvas-wrap canvas{ width:100% !important; height:100% !important; display:block; }
+.viewer3d-status{ text-align:center; color:var(--dim); font-size:12px; margin-top:10px; }
+.viewer3d-hint{ text-align:center; color:var(--steel); font-size:10.5px; margin-top:4px; letter-spacing:0.5px; }
+
+/* PROFILE */
+.profile-card{ text-align:center; background:var(--bg2); border:1px solid var(--steel-line); border-radius:10px; padding:24px 16px; margin-bottom:16px; }
+.profile-avatar{ width:72px;height:72px; border-radius:50%; background:var(--bg); border:3px solid var(--gold); display:flex; align-items:center; justify-content:center; font-family:'Anton',sans-serif; font-size:28px; color:var(--gold); margin:0 auto 10px; }
+.profile-name{ font-family:'Anton',sans-serif; font-size:20px; }
+.profile-edit{ background:none;border:none; color:var(--dim); font-size:11px; text-decoration:underline; cursor:pointer; margin-top:4px; padding:4px; }
+.profile-rank{ display:inline-block; margin-top:10px; background:var(--blood); color:#fff; font-size:10px; padding:4px 12px; border-radius:20px; letter-spacing:1px; font-weight:700; }
+.xp-bar{ width:100%; height:8px; background:var(--bg); border-radius:6px; overflow:hidden; margin-top:16px; }
+.xp-fill{ height:100%; background:linear-gradient(90deg,var(--gold),#f0d878); width:0%; transition:width .4s; }
+.xp-label{ font-size:11px; color:var(--dim); margin-top:6px; }
+.profile-stats-row{ display:flex; gap:10px; margin-bottom:16px; }
+.pstat{ flex:1; background:var(--bg2); border:1px solid var(--steel-line); border-radius:8px; text-align:center; padding:14px 6px; }
+.pstat-num{ font-family:'Anton',sans-serif; font-size:22px; color:var(--gold); }
+.pstat-label{ font-size:9.5px; color:var(--dim); letter-spacing:0.3px; margin-top:2px; }
+.profile-list{ display:flex; flex-direction:column; gap:8px; }
+.profile-list-item{ display:flex; justify-content:space-between; align-items:center; background:var(--bg2); border:1px solid var(--steel-line); border-radius:8px; padding:15px 16px; font-size:13px; cursor:pointer; }
+.profile-list-item span:last-child{ color:var(--dim); font-size:12px; }
+
+/* ACHIEVEMENTS */
+.ach-item{ display:flex; align-items:center; gap:14px; background:var(--bg2); border:1px solid var(--steel-line); border-radius:8px; padding:14px; margin-bottom:10px; }
+.ach-item.locked{ opacity:0.4; }
+.ach-icon{ font-size:26px; width:32px; text-align:center; flex-shrink:0; }
+.ach-title{ font-family:'Anton',sans-serif; font-size:14px; letter-spacing:0.3px; }
+.ach-desc{ font-size:11.5px; color:var(--dim); margin-top:1px; }
+
+.rules-strip{
+  background: var(--bg2); border: 1px solid var(--steel-line); border-radius: 6px;
+  padding: 16px 16px; font-size:13px; color: var(--dim); line-height:1.7;
+}
+.rules-strip b{ color:var(--off); }
+.rules-strip + .rules-strip{ margin-top:12px; }
+
+/* ARENA */
+.arena-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.arena-side{ display:flex; align-items:center; gap:8px; }
+.arena-side.right{ flex-direction:row-reverse; }
+.arena-avatar{ width:34px;height:34px;border-radius:50%; background:var(--bg2); border:2px solid var(--steel-line); display:flex;align-items:center;justify-content:center; font-size:15px; flex-shrink:0; }
+.arena-avatar.you{ border-color:var(--ice); }
+.arena-avatar.rival{ border-color:var(--blood); }
+.arena-side-text{ font-size:11px; line-height:1.3; }
+.arena-side-text .n{ font-weight:700; }
+.arena-side-text .c{ color:var(--dim); }
+.arena-side-text.right{ text-align:right; }
+.arena-crest{ font-family:'Anton',sans-serif; color:var(--gold); font-size:15px; letter-spacing:1px; }
+
+.scoreboard{ display:flex; justify-content:center; margin-bottom: 14px; }
+.scoreboard .pill{ background:var(--bg2); border:1px solid var(--gold); color:var(--gold); border-radius:20px; padding:5px 16px; font-size:11px; font-weight:700; letter-spacing:0.5px; }
+
+.arena{ display:grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items:start; }
+.vs-medal{ font-family:'Anton', sans-serif; font-size:18px; color:var(--dim); align-self:center; padding-top: 90px; }
 .slot{ text-align:center; }
-.slot-label{ font-size:11px; letter-spacing:2px; color:var(--dim); margin-bottom:8px; text-transform:uppercase;}
+.slot-label{ font-size:10.5px; letter-spacing:2px; color:var(--dim); margin-bottom:8px; text-transform:uppercase; }
 
 .card3d{
-  width:100%; max-width: 230px; margin:0 auto;
-  aspect-ratio: 2/3;
-  border-radius: 8px;
-  overflow:hidden;
-  position:relative;
-  background: var(--bg2);
-  border: 1px solid var(--steel-line);
+  width:100%; max-width: 230px; margin:0 auto; aspect-ratio: 2/3; border-radius: 8px;
+  overflow:hidden; position:relative; background: var(--bg2); border: 1px solid var(--steel-line);
 }
-.card-face{
-  position:absolute; inset:0;
-  display:flex; flex-direction:column;
-  opacity:0; z-index:1;
-  transition: opacity .35s ease, transform .35s ease;
-  transform: scaleX(1);
-}
-.card-back{
-  background: repeating-linear-gradient(45deg, #1a1c21, #1a1c21 10px, #202226 10px, #202226 20px);
-  align-items:center; justify-content:center;
-  opacity:1; z-index:2;
-}
-.card-back .mark{ font-family:'Anton', sans-serif; color:var(--steel); font-size:34px; letter-spacing:2px; opacity:0.6;}
+.card-face{ position:absolute; inset:0; display:flex; flex-direction:column; opacity:0; z-index:1; transition: opacity .35s ease, transform .35s ease; transform: scaleX(1); }
+.card-back{ background: repeating-linear-gradient(45deg, #1a1c21, #1a1c21 10px, #202226 10px, #202226 20px); align-items:center; justify-content:center; opacity:1; z-index:2; }
 .card3d.flipped .card-back{ opacity:0; z-index:1; transform: scaleX(0.85); }
 .card3d.flipped .card-front{ opacity:1; z-index:2; transform: scaleX(1); }
 .card-front img{ width:100%; height:100%; object-fit:contain; display:block; }
 
 .stat-highlight{
-  position:absolute;
-  left:65.5%; width:32%;
-  border-radius:5px;
-  border:2px solid transparent;
-  background:rgba(0,0,0,0);
-  opacity:0;
-  transition: opacity .3s ease, border-color .3s ease, background .3s ease;
+  position:absolute; left:65.5%; width:32%; border-radius:5px; border:2px solid transparent;
+  background:rgba(0,0,0,0); opacity:0; transition: opacity .3s ease, border-color .3s ease, background .3s ease;
   pointer-events:none;
 }
 .stat-highlight.show{ opacity:1; }
@@ -193,96 +188,234 @@ body{
 .stat-highlight.lose{ border-color:#d95d55; background:rgba(217,93,85,0.28); box-shadow:0 0 14px rgba(217,93,85,0.65); }
 .stat-highlight.tie{ border-color:#d4a72c; background:rgba(212,167,44,0.28); box-shadow:0 0 14px rgba(212,167,44,0.65); }
 
-/* CATEGORY PICKER */
 .cat-picker{ margin-top: 22px; }
-.cat-picker-label{ text-align:center; font-size:12px; letter-spacing:1.5px; color:var(--dim); margin-bottom:10px; text-transform:uppercase;}
+.cat-picker-label{ text-align:center; font-size:12px; letter-spacing:1.5px; color:var(--dim); margin-bottom:10px; text-transform:uppercase; }
 .cat-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; }
 .cat-btn{
-  background: var(--bg2); border:1px solid var(--steel-line); color:var(--off);
-  border-radius:4px; padding:10px 6px; font-size:12px; cursor:pointer;
-  display:flex; flex-direction:column; gap:2px; align-items:center;
+  background: var(--bg2); border:1px solid var(--steel-line); color:var(--off); border-radius:4px; padding:10px 6px;
+  font-size:12px; cursor:pointer; display:flex; flex-direction:column; gap:2px; align-items:center;
   transition: border-color .12s, background .12s;
 }
-.cat-btn .lbl{ color:var(--dim); font-size:10px; letter-spacing:0.5px; text-transform:uppercase;}
+.cat-btn .ico{ font-size:16px; }
+.cat-btn .lbl{ color:var(--dim); font-size:10px; letter-spacing:0.5px; text-transform:uppercase; }
 .cat-btn .val{ font-weight:700; font-size:14px; }
 .cat-btn:hover:not(:disabled){ border-color: var(--gold); }
 .cat-btn:disabled{ opacity:0.4; cursor:default; }
 
-/* LOG */
-.log{
-  margin-top:20px; background:var(--bg2); border:1px solid var(--steel-line); border-radius:4px;
-  padding: 12px 14px; font-size:12.5px; color:var(--dim); max-height:110px; overflow-y:auto;
-}
+.log{ margin-top:20px; background:var(--bg2); border:1px solid var(--steel-line); border-radius:4px; padding: 12px 14px; font-size:12.5px; color:var(--dim); max-height:110px; overflow-y:auto; }
 .log div{ padding:2px 0; }
-.log .hl{ color: var(--off); font-weight:600; }
 .log .win{ color:#6fe38a; }
 .log .lose{ color:#d95d55; }
 .log .tie{ color: var(--gold); }
 
-.result-banner{
-  text-align:center; margin-top:16px; min-height:26px;
-  font-family:'Anton', sans-serif; letter-spacing:1px; font-size:18px;
-}
+.result-banner{ text-align:center; margin-top:16px; min-height:26px; font-family:'Anton', sans-serif; letter-spacing:1px; font-size:18px; }
 .result-banner.win{ color:#6fe38a; }
 .result-banner.lose{ color:#d95d55; }
 .result-banner.tie{ color: var(--gold); }
 
-/* END SCREEN */
-.end-hero{ text-align:center; padding: 40px 10px; }
-.end-hero .trophy{ font-size:50px; }
-.end-hero h2{ font-family:'Anton', sans-serif; font-size:clamp(28px,7vw,42px); margin-top:10px; }
-.end-hero p{ color:var(--dim); margin-top:8px; font-size:14px;}
-
-.footer-note{ text-align:center; color:var(--steel); font-size:11px; margin-top:30px; letter-spacing:1px;}
+/* RESULT SCREEN */
+.result-hero{ text-align:center; padding-top:24px; }
+.result-crest{ font-family:'Anton',sans-serif; color:var(--gold); font-size:15px; letter-spacing:4px; }
+.result-title{ font-family:'Anton',sans-serif; font-size:42px; color:#6fe38a; text-shadow:0 0 22px rgba(111,227,138,0.5); margin:8px 0 18px; }
+.result-title.lose{ color:#d95d55; text-shadow:0 0 22px rgba(217,93,85,0.5); }
+.result-cardwrap{ max-width:190px; margin:0 auto 18px; border-radius:10px; overflow:hidden; border:2px solid var(--gold); box-shadow:0 0 30px rgba(212,167,44,0.3); }
+.result-cardwrap img{ width:100%; display:block; }
+.result-sub{ font-family:'Anton',sans-serif; font-size:22px; }
+.result-detail{ color:var(--dim); font-size:13px; margin-top:6px; }
+.result-rewards{ color:var(--gold); font-size:13px; margin-top:12px; font-weight:700; letter-spacing:0.5px; }
+.result-buttons{ max-width:280px; margin:24px auto 0; }
 </style>
 </head>
 <body>
 <div class="crowd-glow"></div>
 <div class="wrap">
 
-  <div class="topbar">
-    <div>
-      <div class="brand">RWA <span>SHOWDOWN</span></div>
-      <div class="subbrand">RING WARRIORS ALLIANCE · TRUMP CARDS</div>
+  <div class="topbar-app" id="topbar-app">
+    <div class="tb-left" onclick="showScreen('profile')">
+      <div class="tb-avatar" id="tb-avatar">P</div>
+      <div>
+        <div class="tb-name" id="tb-name">Player1</div>
+        <div class="tb-rank" id="tb-rank">Rookie</div>
+      </div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-stat">🪙 <span id="tb-coins">1250</span></div>
+      <div class="tb-stat">💎 <span id="tb-gems">50</span></div>
+      <button class="tb-gear" onclick="showScreen('settings')">⚙</button>
     </div>
   </div>
 
-  <!-- START SCREEN -->
-  <div class="screen active" id="screen-start">
-    <div class="hero">
-      <h1>PICK A STAT.<br><span class="accent">SETTLE IT.</span></h1>
-      <p>All 52 RWA Superstars are in the deck. Every card hides a weapon &mdash; find the number that wins and call it before your rival does.</p>
+  <!-- MAIN MENU -->
+  <div class="screen active" id="screen-menu">
+    <div class="menu-hero">
+      <img src="sharp-edge.jpg" alt="">
+      <div class="menu-hero-fade"></div>
     </div>
+    <div class="menu-brand">
+      <div class="brand-big">RWA</div>
+      <div class="brand-sub">RING WARRIORS ALLIANCE</div>
+      <div class="brand-tagline">FIGHT ★ COLLECT ★ CONQUER</div>
+    </div>
+    <div class="menu-buttons">
+      <button class="btn" onclick="showScreen('mode')">⚔ PLAY GAME</button>
+      <button class="btn ghost" onclick="showScreen('collection')">🎴 MY COLLECTION</button>
+      <button class="btn ghost" onclick="showScreen('rules')">📖 GAME RULES</button>
+      <button class="btn ghost" onclick="showScreen('settings')">⚙ SETTINGS</button>
+    </div>
+    <div class="footer-note">52 WARRIORS · ONE ARENA · ENDLESS BATTLES</div>
+  </div>
 
-    <div class="mode-grid">
-      <div class="mode-card" data-mode="ai" onclick="selectMode('ai')">
-        <h3>VS THE HOUSE</h3>
-        <p>Play solo against an AI opponent that picks its best stat every round.</p>
+  <!-- MODE SELECT -->
+  <div class="screen" id="screen-mode">
+    <div class="subheader"><button class="back-btn" onclick="showScreen('menu')">←</button><div class="subheader-title">SELECT GAME MODE</div></div>
+    <div class="mode-list">
+      <div class="mode-row" onclick="selectModeAndPlay('ai')">
+        <div class="mode-row-icon">🥊</div>
+        <div class="mode-row-text"><div class="mode-row-title">1 PLAYER</div><div class="mode-row-sub">Play against AI</div></div>
+        <div class="mode-row-arrow">›</div>
       </div>
-      <div class="mode-card" data-mode="pvp" onclick="selectMode('pvp')">
-        <h3>PASS &amp; PLAY</h3>
-        <p>Two players, one screen. Hand it over and call your shot.</p>
+      <div class="mode-row" onclick="selectModeAndPlay('pvp')">
+        <div class="mode-row-icon">🤜🤛</div>
+        <div class="mode-row-text"><div class="mode-row-title">2 PLAYERS</div><div class="mode-row-sub">Pass &amp; Play</div></div>
+        <div class="mode-row-arrow">›</div>
+      </div>
+      <div class="mode-row locked">
+        <div class="mode-row-icon">👥</div>
+        <div class="mode-row-text"><div class="mode-row-title">3 PLAYERS</div><div class="mode-row-sub">Coming Soon</div></div>
+        <div class="mode-row-arrow">🔒</div>
+      </div>
+      <div class="mode-row locked">
+        <div class="mode-row-icon">👥</div>
+        <div class="mode-row-text"><div class="mode-row-title">4 PLAYERS</div><div class="mode-row-sub">Coming Soon</div></div>
+        <div class="mode-row-arrow">🔒</div>
       </div>
     </div>
+    <div class="footer-note">SAME CARDS. NEW RIVALRIES.</div>
+  </div>
 
+  <!-- MATCH LENGTH -->
+  <div class="screen" id="screen-length">
+    <div class="subheader"><button class="back-btn" onclick="showScreen('mode')">←</button><div class="subheader-title">MATCH LENGTH</div></div>
+    <div class="mode-list">
+      <div class="mode-row" onclick="startGameWithLength('full')">
+        <div class="mode-row-icon">🃏</div>
+        <div class="mode-row-text"><div class="mode-row-title">CLASSIC</div><div class="mode-row-sub">Play until one side holds all 52 cards</div></div>
+        <div class="mode-row-arrow">›</div>
+      </div>
+      <div class="mode-row" onclick="startGameWithLength('short')">
+        <div class="mode-row-icon">⏱️</div>
+        <div class="mode-row-text"><div class="mode-row-title">SHORT MATCH</div><div class="mode-row-sub">Ends the moment either side drops to 12 cards</div></div>
+        <div class="mode-row-arrow">›</div>
+      </div>
+      <div class="mode-row" onclick="startGameWithLength('blitz15')">
+        <div class="mode-row-icon">⚡</div>
+        <div class="mode-row-text"><div class="mode-row-title">BLITZ — 15 ROUNDS</div><div class="mode-row-sub">Fixed round count, most cards wins</div></div>
+        <div class="mode-row-arrow">›</div>
+      </div>
+    </div>
+    <div class="footer-note">PICK YOUR PACE.</div>
+  </div>
+
+  <!-- COLLECTION -->
+  <div class="screen" id="screen-collection">
+    <div class="subheader"><button class="back-btn" onclick="showScreen('menu')">←</button><div class="subheader-title">🎴 MY COLLECTION</div></div>
+    <div class="collection-tabs">
+      <button class="tab active" data-f="all" onclick="setCollectionFilter('all')">ALL (52)</button>
+      <button class="tab" data-f="male" onclick="setCollectionFilter('male')">MALE (40)</button>
+      <button class="tab" data-f="female" onclick="setCollectionFilter('female')">FEMALE (12)</button>
+    </div>
+    <input class="search-box" id="collection-search" placeholder="Search warrior..." oninput="renderCollection()">
+    <div class="collection-grid" id="collection-grid"></div>
+  </div>
+  <div class="card-modal" id="card-modal" onclick="if(event.target===this) this.classList.remove('show')">
+    <div class="card-modal-inner">
+      <button class="card-modal-close" onclick="document.getElementById('card-modal').classList.remove('show')">✕</button>
+      <img id="card-modal-img" src="" alt="">
+      <button class="btn view3d-btn" id="view3d-btn" style="display:none;" onclick="open3DViewer()">🔄 View in 3D</button>
+    </div>
+  </div>
+
+  <div class="card-modal" id="viewer3d-modal" onclick="if(event.target===this) close3DViewer()">
+    <div class="viewer3d-inner">
+      <button class="card-modal-close" onclick="close3DViewer()">✕</button>
+      <div id="viewer3d-canvas-wrap"></div>
+      <div id="viewer3d-status" class="viewer3d-status">Loading 3D model…</div>
+      <div class="viewer3d-hint">Drag to rotate · pinch/scroll to zoom</div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="screen" id="screen-profile">
+    <div class="subheader"><button class="back-btn" onclick="showScreen('menu')">←</button><div class="subheader-title">👤 MY PROFILE</div></div>
+    <div class="profile-card">
+      <div class="profile-avatar" id="profile-avatar">P</div>
+      <div class="profile-name" id="profile-name-display">Player1</div>
+      <button class="profile-edit" onclick="renamePlayer()">✎ rename</button>
+      <div><span class="profile-rank" id="profile-rank">Rookie · Level 1</span></div>
+      <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
+      <div class="xp-label" id="xp-label">0 / 200 XP</div>
+    </div>
+    <div class="profile-stats-row">
+      <div class="pstat"><div class="pstat-num" id="pstat-played">0</div><div class="pstat-label">GAMES PLAYED</div></div>
+      <div class="pstat"><div class="pstat-num" id="pstat-won">0</div><div class="pstat-label">GAMES WON</div></div>
+      <div class="pstat"><div class="pstat-num" id="pstat-rate">0%</div><div class="pstat-label">WIN RATE</div></div>
+    </div>
+    <div class="profile-list">
+      <div class="profile-list-item" onclick="showScreen('collection')"><span>🎴 My Collection</span><span>52/52 ›</span></div>
+      <div class="profile-list-item" onclick="showScreen('achievements')"><span>🏆 Achievements</span><span id="profile-ach-count">0/10 ›</span></div>
+      <div class="profile-list-item" onclick="showScreen('rules')"><span>📖 Game Rules</span><span>›</span></div>
+      <div class="profile-list-item" onclick="showScreen('settings')"><span>⚙ Settings</span><span>›</span></div>
+    </div>
+    <div class="footer-note">COLLECT ★ BATTLE ★ BE A LEGEND</div>
+  </div>
+
+  <!-- ACHIEVEMENTS -->
+  <div class="screen" id="screen-achievements">
+    <div class="subheader"><button class="back-btn" onclick="showScreen('profile')">←</button><div class="subheader-title">🏆 ACHIEVEMENTS</div></div>
+    <div id="ach-list"></div>
+  </div>
+
+  <!-- RULES -->
+  <div class="screen" id="screen-rules">
+    <div class="subheader"><button class="back-btn" onclick="showScreen('menu')">←</button><div class="subheader-title">📖 GAME RULES</div></div>
     <div class="rules-strip">
-      <b>How it works:</b> The deck is split evenly. Each round the active caller picks a category from their top card. Higher card image wins &mdash; except <b>Rank</b>, where lower wins. Winner takes both cards to the bottom of their deck. A tie draws the next card and replays the same category, with everything on the line. Run out of cards, and it's over.
+      <b>How it works:</b> The 52-card deck is split evenly. Each round the active caller picks a category from their top card. Higher wins &mdash; except <b>Rank</b>, where lower wins. Winner takes both cards to the bottom of their deck. A tie draws the next card and replays the same category, with everything on the line. Run out of cards, and it's over.
     </div>
-
-    <button class="btn" id="start-btn" disabled onclick="startGame()">CHOOSE A MODE TO BEGIN</button>
+    <div class="rules-strip">
+      <b>Categories:</b> Rank (lower is better), Height, Weight, Matches, Biceps, Chest &mdash; all others, higher wins.
+    </div>
   </div>
 
-  <!-- ARENA SCREEN -->
-  <div class="screen" id="screen-arena">
-    <div class="scoreboard">
-      <div class="pill" id="p1-pill">YOU — 0</div>
-      <div class="pill" id="turn-pill">&nbsp;</div>
-      <div class="pill" id="p2-pill">RIVAL — 0</div>
+  <!-- SETTINGS -->
+  <div class="screen" id="screen-settings">
+    <div class="subheader"><button class="back-btn" onclick="showScreen('menu')">←</button><div class="subheader-title">⚙ SETTINGS</div></div>
+    <div class="profile-list">
+      <div class="profile-list-item" onclick="toggleMusic()"><span>🎵 Music</span><span id="toggle-music">ON</span></div>
+      <div class="profile-list-item" onclick="toggleSfx()"><span>🔊 Sound Effects</span><span id="toggle-sfx">ON</span></div>
+      <div class="profile-list-item" onclick="resetProgress()"><span>🗑 Reset Progress</span><span>›</span></div>
     </div>
+    <div class="rules-strip" style="margin-top:14px;">RWA Showdown is a fan-made Top Trumps&ndash;style card game built around the Ring Warriors Alliance roster. Progress (coins, XP, achievements) is saved locally on this device only &mdash; it won't sync across devices or browsers.</div>
+  </div>
+
+  <!-- ARENA -->
+  <div class="screen" id="screen-arena">
+    <div class="arena-header">
+      <div class="arena-side">
+        <div class="arena-avatar you">🙂</div>
+        <div class="arena-side-text"><div class="n" id="arena-p1-name">Player1</div><div class="c" id="arena-p1-count">26 Cards</div></div>
+      </div>
+      <div class="arena-crest">RWA</div>
+      <div class="arena-side right">
+        <div class="arena-side-text right"><div class="n" id="arena-p2-name">AI Opponent</div><div class="c" id="arena-p2-count">26 Cards</div></div>
+        <div class="arena-avatar rival" id="arena-p2-avatar">🤖</div>
+      </div>
+    </div>
+
+    <div class="scoreboard"><div class="pill" id="turn-pill">YOU CALL IT</div></div>
 
     <div class="arena">
       <div class="slot">
-        <div class="slot-label" id="p1-label">Your Card</div>
+        <div class="slot-label">Your Card</div>
         <div class="card3d" id="card-p1">
           <div class="card-face card-back"><img src="card-back.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
           <div class="card-face card-front">
@@ -291,9 +424,7 @@ body{
           </div>
         </div>
       </div>
-
       <div class="vs-medal">VS</div>
-
       <div class="slot">
         <div class="slot-label" id="p2-label">Rival Card</div>
         <div class="card3d" id="card-p2">
@@ -316,22 +447,26 @@ body{
     <div class="log" id="log"></div>
   </div>
 
-  <!-- END SCREEN -->
-  <div class="screen" id="screen-end">
-    <div class="end-hero">
-      <div class="trophy">🏆</div>
-      <h2 id="end-title">GAME OVER</h2>
-      <p id="end-sub">—</p>
-      <button class="btn" onclick="resetToStart()">PLAY AGAIN</button>
+  <!-- RESULT -->
+  <div class="screen" id="screen-result">
+    <div class="result-hero">
+      <div class="result-crest">RWA</div>
+      <div class="result-title" id="result-title">WINNER!</div>
+      <div class="result-cardwrap"><img id="result-card-img" src="" alt=""></div>
+      <div class="result-sub" id="result-sub">YOU WIN!</div>
+      <div class="result-detail" id="result-detail">You collected 52 cards</div>
+      <div class="result-rewards" id="result-rewards">+50 Coins · +100 XP</div>
+      <div class="result-buttons">
+        <button class="btn" onclick="showScreen('mode')">PLAY AGAIN</button>
+        <button class="btn ghost" onclick="showScreen('menu')">MAIN MENU</button>
+      </div>
     </div>
   </div>
 
-  <div class="footer-note">EVERY CARD HAS A CHANCE</div>
 </div>
 
 <script>
 /* ---------------- DECK DATA ---------------- */
-// Full 52-card RWA roster.
 const MASTER_DECK = [
   { name: "SHARP EDGE", img: "sharp-edge.jpg", rank: 1, heightIn: 84, heightLabel: "7'0\"", weight: 350, matchesLabel: "999+", matchesVal: 999, biceps: 26, chest: 60 },
   { name: "CRAZY", img: "crazy.jpg", rank: 2, heightIn: 76, heightLabel: "6'4\"", weight: 275, matchesLabel: "420+", matchesVal: 420, biceps: 22, chest: 50 },
@@ -343,7 +478,7 @@ const MASTER_DECK = [
   { name: "NIGHT HAWK", img: "night-hawk.jpg", rank: 8, heightIn: 78, heightLabel: "6'6\"", weight: 275, matchesLabel: "470", matchesVal: 470, biceps: 21, chest: 52 },
   { name: "RAGE MONK", img: "rage-monk.jpg", rank: 9, heightIn: 74, heightLabel: "6'2\"", weight: 260, matchesLabel: "480", matchesVal: 480, biceps: 22, chest: 58 },
   { name: "BLOOD RAZOR", img: "blood-razor.jpg", rank: 10, heightIn: 76, heightLabel: "6'4\"", weight: 300, matchesLabel: "520", matchesVal: 520, biceps: 24, chest: 62 },
-  { name: "STEEL VIPER", img: "steel-viper.jpg", rank: 11, heightIn: 73, heightLabel: "6'1\"", weight: 245, matchesLabel: "460", matchesVal: 460, biceps: 21, chest: 50 },
+  { name: "STEEL VIPER", img: "steel-viper.jpg", rank: 11, heightIn: 73, heightLabel: "6'1\"", weight: 245, matchesLabel: "460", matchesVal: 460, biceps: 21, chest: 50, model: "steel-viper.obj" },
   { name: "DESERT WOLF", img: "desert-wolf.jpg", rank: 12, heightIn: 75, heightLabel: "6'3\"", weight: 285, matchesLabel: "430", matchesVal: 430, biceps: 23, chest: 60 },
   { name: "THUNDER VEER", img: "thunder-veer.jpg", rank: 13, heightIn: 77, heightLabel: "6'5\"", weight: 295, matchesLabel: "500", matchesVal: 500, biceps: 24, chest: 56 },
   { name: "FROST GIANT", img: "frost-giant.jpg", rank: 14, heightIn: 80, heightLabel: "6'8\"", weight: 365, matchesLabel: "410", matchesVal: 410, biceps: 26, chest: 68 },
@@ -388,16 +523,14 @@ const MASTER_DECK = [
 ];
 
 const CATEGORIES = [
-  { key: "rank",    label: "Rank",    unit: "",     lowerWins: true,  getVal: c => c.rank,        getDisplay: c => "#"+c.rank },
-  { key: "height",  label: "Height",  unit: "",     lowerWins: false, getVal: c => c.heightIn,    getDisplay: c => c.heightLabel },
-  { key: "weight",  label: "Weight",  unit: "lbs",  lowerWins: false, getVal: c => c.weight,      getDisplay: c => c.weight + " lbs" },
-  { key: "matches", label: "Matches", unit: "",     lowerWins: false, getVal: c => c.matchesVal,  getDisplay: c => c.matchesLabel },
-  { key: "biceps",  label: "Biceps",  unit: "in",   lowerWins: false, getVal: c => c.biceps,      getDisplay: c => c.biceps + '"' },
-  { key: "chest",   label: "Chest",   unit: "in",   lowerWins: false, getVal: c => c.chest,       getDisplay: c => c.chest + '"' }
+  { key: "rank",    label: "Rank",    icon:"👑", lowerWins: true,  getVal: c => c.rank,        getDisplay: c => "#"+c.rank },
+  { key: "height",  label: "Height",  icon:"📏", lowerWins: false, getVal: c => c.heightIn,    getDisplay: c => c.heightLabel },
+  { key: "weight",  label: "Weight",  icon:"⚖️", lowerWins: false, getVal: c => c.weight,      getDisplay: c => c.weight + " lbs" },
+  { key: "matches", label: "Matches", icon:"🏆", lowerWins: false, getVal: c => c.matchesVal,  getDisplay: c => c.matchesLabel },
+  { key: "biceps",  label: "Biceps",  icon:"💪", lowerWins: false, getVal: c => c.biceps,      getDisplay: c => c.biceps + '"' },
+  { key: "chest",   label: "Chest",   icon:"🛡️", lowerWins: false, getVal: c => c.chest,       getDisplay: c => c.chest + '"' }
 ];
 
-// Pixel-calibrated stat box positions on the card artwork (% of card height).
-// Every card in the deck shares this exact template layout.
 const STAT_BOX = {
   rank:    { top: 3.5,  bottom: 16 },
   height:  { top: 26,   bottom: 34.5 },
@@ -407,62 +540,210 @@ const STAT_BOX = {
   chest:   { top: 60,   bottom: 67.5 }
 };
 
-/* ---------------- STATE ---------------- */
+/* ---------------- PROFILE / PERSISTENCE ---------------- */
+function defaultProfile(){ return { name:'Player1', coins:1250, gems:50, xp:0, gamesPlayed:0, gamesWon:0 }; }
+function loadProfile(){ try{ const p = JSON.parse(localStorage.getItem('rwa_profile_v1')); return p || defaultProfile(); }catch(e){ return defaultProfile(); } }
+function saveProfile(){ localStorage.setItem('rwa_profile_v1', JSON.stringify(profile)); }
+let profile = loadProfile();
+
+function loadAchievements(){ try{ return JSON.parse(localStorage.getItem('rwa_achievements_v1')) || {}; }catch(e){ return {}; } }
+function saveAchievements(){ localStorage.setItem('rwa_achievements_v1', JSON.stringify(achievements)); }
+let achievements = loadAchievements();
+
+function loadViewed(){ try{ return new Set(JSON.parse(localStorage.getItem('rwa_viewed_v1'))||[]); }catch(e){ return new Set(); } }
+function saveViewed(){ localStorage.setItem('rwa_viewed_v1', JSON.stringify([...viewedCards])); }
+let viewedCards = loadViewed();
+
+const ACHIEVEMENT_LIST = [
+  { id:'first_win', icon:'🥇', title:'First Blood', desc:'Win your first match' },
+  { id:'rookie_no_more', icon:'🎮', title:'Getting Started', desc:'Play 5 matches' },
+  { id:'veteran', icon:'🎖️', title:'Veteran', desc:'Play 20 matches' },
+  { id:'champion', icon:'🏆', title:'Champion', desc:'Win 5 matches' },
+  { id:'legend', icon:'👑', title:'Legend', desc:'Win 20 matches' },
+  { id:'giant_slayer', icon:'🔨', title:'Little Giant', desc:'Win a round with Dwarf Boy' },
+  { id:'heavy_hitter', icon:'⚖️', title:'Heavy Hitter', desc:'Win a round on Weight' },
+  { id:'brains_over_brawn', icon:'👑', title:'Top Ranked', desc:'Win a round on Rank' },
+  { id:'flawless', icon:'💎', title:'Flawless Victory', desc:'Win a match without losing a single round' },
+  { id:'curator', icon:'🎴', title:'Curator', desc:'View every card in your collection' }
+];
+
+function unlockAchievement(id){
+  if(!achievements[id]){ achievements[id] = true; saveAchievements(); }
+}
+
+function computeLevel(totalXp){
+  let level=1, remaining=totalXp;
+  while(remaining>=200){ remaining-=200; level++; }
+  return { level, into: remaining };
+}
+function rankTitle(level){
+  if(level>=15) return 'Legend';
+  if(level>=10) return 'Elite';
+  if(level>=6) return 'Veteran';
+  if(level>=3) return 'Fighter';
+  return 'Rookie';
+}
+
+function refreshTopbar(){
+  const {level} = computeLevel(profile.xp);
+  document.getElementById('tb-avatar').textContent = profile.name.charAt(0).toUpperCase();
+  document.getElementById('tb-name').textContent = profile.name;
+  document.getElementById('tb-rank').textContent = rankTitle(level);
+  document.getElementById('tb-coins').textContent = profile.coins;
+  document.getElementById('tb-gems').textContent = profile.gems;
+}
+
+function refreshProfileScreen(){
+  const {level, into} = computeLevel(profile.xp);
+  document.getElementById('profile-avatar').textContent = profile.name.charAt(0).toUpperCase();
+  document.getElementById('profile-name-display').textContent = profile.name;
+  document.getElementById('profile-rank').textContent = rankTitle(level) + ' · Level ' + level;
+  document.getElementById('xp-fill').style.width = (into/200*100) + '%';
+  document.getElementById('xp-label').textContent = into + ' / 200 XP';
+  document.getElementById('pstat-played').textContent = profile.gamesPlayed;
+  document.getElementById('pstat-won').textContent = profile.gamesWon;
+  const rate = profile.gamesPlayed ? Math.round(profile.gamesWon/profile.gamesPlayed*100) : 0;
+  document.getElementById('pstat-rate').textContent = rate + '%';
+  const unlockedCount = ACHIEVEMENT_LIST.filter(a=>achievements[a.id]).length;
+  document.getElementById('profile-ach-count').textContent = unlockedCount + '/' + ACHIEVEMENT_LIST.length + ' ›';
+}
+
+function renamePlayer(){
+  const name = prompt('Enter your name', profile.name);
+  if(name && name.trim()){
+    profile.name = name.trim().slice(0,16);
+    saveProfile();
+    refreshTopbar();
+    refreshProfileScreen();
+  }
+}
+
+function resetProgress(){
+  if(confirm('Reset all progress? This clears your stats, coins, and achievements on this device.')){
+    localStorage.removeItem('rwa_profile_v1');
+    localStorage.removeItem('rwa_achievements_v1');
+    localStorage.removeItem('rwa_viewed_v1');
+    profile = defaultProfile();
+    achievements = {};
+    viewedCards = new Set();
+    saveProfile(); saveAchievements(); saveViewed();
+    refreshTopbar();
+    showScreen('menu');
+  }
+}
+
+function renderAchievements(){
+  const list = document.getElementById('ach-list');
+  list.innerHTML = '';
+  ACHIEVEMENT_LIST.forEach(a=>{
+    const unlocked = !!achievements[a.id];
+    const div = document.createElement('div');
+    div.className = 'ach-item' + (unlocked ? '' : ' locked');
+    div.innerHTML = '<div class="ach-icon">'+a.icon+'</div><div><div class="ach-title">'+a.title+'</div><div class="ach-desc">'+a.desc+'</div></div>';
+    list.appendChild(div);
+  });
+}
+
+/* ---------------- COLLECTION ---------------- */
+let collectionFilter = 'all';
+function setCollectionFilter(f){
+  collectionFilter = f;
+  document.querySelectorAll('.tab').forEach(t=> t.classList.toggle('active', t.dataset.f===f));
+  renderCollection();
+}
+function renderCollection(){
+  const grid = document.getElementById('collection-grid');
+  const q = document.getElementById('collection-search').value.trim().toLowerCase();
+  grid.innerHTML = '';
+  const filtered = MASTER_DECK.filter(c=>{
+    if(collectionFilter==='male' && c.rank>40) return false;
+    if(collectionFilter==='female' && c.rank<=40) return false;
+    if(q && !c.name.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  if(filtered.length===0){
+    grid.innerHTML = '<div class="collection-empty" style="grid-column:1/-1;">No warriors match that search.</div>';
+    return;
+  }
+  filtered.forEach(c=>{
+    const div = document.createElement('div');
+    div.className = 'collection-card';
+    div.onclick = ()=> openCardModal(c);
+    div.innerHTML = '<div class="cc-rank">#'+c.rank+'</div><img src="'+c.img+'" loading="lazy" alt=""><div class="cc-name">'+c.name+'</div>';
+    grid.appendChild(div);
+  });
+}
+let currentModalCard = null;
+function openCardModal(c){
+  currentModalCard = c;
+  viewedCards.add(c.rank);
+  saveViewed();
+  if(viewedCards.size>=52) unlockAchievement('curator');
+  document.getElementById('card-modal-img').src = c.img;
+  document.getElementById('view3d-btn').style.display = c.model ? 'block' : 'none';
+  document.getElementById('card-modal').classList.add('show');
+}
+
+/* ---------------- SCREEN NAV ---------------- */
+function showScreen(id){
+  if(id!=='result' && id!=='arena') sfxTap();
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  document.body.classList.toggle('hide-topbar', id==='arena' || id==='result');
+  window.scrollTo(0,0);
+  if(id==='collection') renderCollection();
+  if(id==='profile') refreshProfileScreen();
+  if(id==='achievements') renderAchievements();
+  if(id==='settings') renderAudioUI();
+}
+
+let pendingMode = 'ai';
+function selectModeAndPlay(mode){
+  pendingMode = mode;
+  showScreen('length');
+}
+
+/* ---------------- GAME STATE ---------------- */
 let state = {
-  mode: null,          // 'ai' | 'pvp'
-  p1Deck: [],
-  p2Deck: [],
-  pot: [],
-  turn: 1,             // which player calls the category this round
-  awaitingReveal: false,
-  gameOver: false
+  mode: null, matchLength: 'full', roundsPlayed: 0, p1Deck: [], p2Deck: [], pot: [], turn: 1,
+  awaitingReveal: false, gameOver: false, p1RoundWins: 0, p2RoundWins: 0
 };
 
 function shuffle(arr){
   const a = arr.slice();
-  for(let i=a.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
+  for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
   return a;
 }
 
-function selectMode(m){
-  state.mode = m;
-  document.querySelectorAll('.mode-card').forEach(el=>el.classList.remove('selected'));
-  document.querySelector('.mode-card[data-mode="'+m+'"]').classList.add('selected');
-  const btn = document.getElementById('start-btn');
-  btn.disabled = false;
-  btn.textContent = m === 'ai' ? "FACE THE HOUSE" : "START PASS & PLAY";
-  document.getElementById('p2-label').textContent = m === 'ai' ? 'Rival Card' : "Player 2's Card";
-  document.getElementById('p2-pill').textContent = (m === 'ai' ? 'RIVAL' : 'P2') + ' — 0';
+function startGameWithLength(length){
+  state.matchLength = length;
+  const mode = pendingMode;
+  document.getElementById('arena-p2-name').textContent = mode==='ai' ? 'AI Opponent' : 'Player 2';
+  document.getElementById('arena-p2-avatar').textContent = mode==='ai' ? '🤖' : '🙂';
+  document.getElementById('p2-label').textContent = mode==='ai' ? 'Rival Card' : "Player 2's Card";
+  document.getElementById('arena-p1-name').textContent = profile.name;
+  state.mode = mode;
+  startGame();
 }
 
 function startGame(){
   const shuffled = shuffle(MASTER_DECK);
-  state.p1Deck = [];
-  state.p2Deck = [];
-  shuffled.forEach((c,i)=>{
-    if(i % 2 === 0) state.p1Deck.push(c); else state.p2Deck.push(c);
-  });
+  state.p1Deck = []; state.p2Deck = [];
+  shuffled.forEach((c,i)=>{ if(i%2===0) state.p1Deck.push(c); else state.p2Deck.push(c); });
   state.pot = [];
   state.turn = Math.random() < 0.5 ? 1 : 2;
   state.gameOver = false;
-
+  state.roundsPlayed = 0;
+  state.p1RoundWins = 0; state.p2RoundWins = 0;
   showScreen('arena');
   renderRound();
-}
-
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('screen-'+id).classList.add('active');
 }
 
 /* ---------------- RENDER ---------------- */
 function fillCardFace(prefix, card){
   document.getElementById(prefix+'-img').src = card.img;
   const hl = document.getElementById(prefix+'-highlight');
-  hl.className = 'stat-highlight'; // reset to hidden, no color
+  hl.className = 'stat-highlight';
 }
 
 function renderRound(){
@@ -471,13 +752,12 @@ function renderRound(){
   document.getElementById('result-banner').textContent = '\u00A0';
   document.getElementById('result-banner').className = 'result-banner';
 
-  document.getElementById('p1-pill').textContent = 'YOU — ' + state.p1Deck.length;
-  document.getElementById('p2-pill').textContent = (state.mode==='ai'?'RIVAL':'P2') + ' — ' + state.p2Deck.length;
+  document.getElementById('arena-p1-count').textContent = state.p1Deck.length + ' Cards';
+  document.getElementById('arena-p2-count').textContent = state.p2Deck.length + ' Cards';
 
-  if(state.p1Deck.length === 0 || state.p2Deck.length === 0){
-    endGame();
-    return;
-  }
+  if(state.p1Deck.length === 0 || state.p2Deck.length === 0){ endGame(); return; }
+  if(state.matchLength==='short' && (state.p1Deck.length<=12 || state.p2Deck.length<=12)){ endGame(); return; }
+  if(state.matchLength==='blitz15' && state.roundsPlayed>=15){ endGame(); return; }
 
   const c1 = state.p1Deck[0];
   const c2 = state.p2Deck[0];
@@ -485,20 +765,12 @@ function renderRound(){
   fillCardFace('p2', c2);
 
   const callerIsP1 = state.turn === 1;
-  document.getElementById('turn-pill').textContent = callerIsP1
-    ? "YOU CALL IT"
-    : (state.mode === 'ai' ? "RIVAL IS THINKING…" : "P2 CALLS IT");
-  document.getElementById('turn-pill').classList.toggle('turn', true);
-
-  document.getElementById('picker-label').textContent = callerIsP1
-    ? "Choose a category from your card"
-    : (state.mode === 'ai' ? "Rival is choosing…" : "Player 2 — hide the screen, then choose");
+  document.getElementById('turn-pill').textContent = callerIsP1 ? "YOU CALL IT" : (state.mode==='ai' ? "RIVAL IS THINKING…" : "P2 CALLS IT");
+  document.getElementById('picker-label').textContent = callerIsP1 ? "Choose a category from your card" : (state.mode==='ai' ? "Rival is choosing…" : "Player 2 — hide the screen, then choose");
 
   renderCatGrid(callerIsP1, c1);
 
-  if(!callerIsP1 && state.mode === 'ai'){
-    setTimeout(()=> aiPick(c2), 1800);
-  }
+  if(!callerIsP1 && state.mode==='ai'){ setTimeout(()=> aiPick(c2), 1800); }
 }
 
 function renderCatGrid(interactive, refCard){
@@ -508,7 +780,7 @@ function renderCatGrid(interactive, refCard){
     const btn = document.createElement('button');
     btn.className = 'cat-btn';
     btn.disabled = !interactive;
-    btn.innerHTML = '<span class="lbl">'+cat.label+'</span><span class="val">'+cat.getDisplay(refCard)+'</span>';
+    btn.innerHTML = '<span class="ico">'+cat.icon+'</span><span class="lbl">'+cat.label+'</span><span class="val">'+cat.getDisplay(refCard)+'</span>';
     btn.onclick = ()=> playCategory(cat.key);
     grid.appendChild(btn);
   });
@@ -516,13 +788,11 @@ function renderCatGrid(interactive, refCard){
 
 /* ---------------- GAME LOGIC ---------------- */
 function aiPick(aiCard){
-  // pick the category where the AI's card is most favorable
-  let best = null, bestScore = -Infinity;
+  let best=null, bestScore=-Infinity;
   CATEGORIES.forEach(cat=>{
     const val = cat.getVal(aiCard);
     const score = cat.lowerWins ? -val : val;
-    // normalize roughly by category scale so ranks (small numbers) don't dominate
-    const norm = score / (cat.key==='rank' ? 1 : (cat.key==='weight' ? 10 : (cat.key==='matches'?10:1)));
+    const norm = score / (cat.key==='rank' ? 1 : (cat.key==='weight' || cat.key==='matches' ? 10 : 1));
     if(norm > bestScore){ bestScore = norm; best = cat.key; }
   });
   playCategory(best);
@@ -531,35 +801,32 @@ function aiPick(aiCard){
 function playCategory(catKey){
   if(state.awaitingReveal) return;
   state.awaitingReveal = true;
-
+  sfxFlip();
   const cat = CATEGORIES.find(c=>c.key===catKey);
   const c1 = state.p1Deck[0];
   const c2 = state.p2Deck[0];
-
-  // disable further picks during reveal
-  document.querySelectorAll('.cat-btn').forEach(b=>b.disabled = true);
+  document.querySelectorAll('.cat-btn').forEach(b=>b.disabled=true);
   document.getElementById('picker-label').textContent = 'Category: ' + cat.label;
-
   document.getElementById('card-p1').classList.add('flipped');
   document.getElementById('card-p2').classList.add('flipped');
-
   setTimeout(()=> resolveRound(cat, c1, c2), 750);
 }
 
 function resolveRound(cat, c1, c2){
-  const v1 = cat.getVal(c1);
-  const v2 = cat.getVal(c2);
-  let outcome; // 1, 2, or 'tie'
-  if(v1 === v2) outcome = 'tie';
-  else if(cat.lowerWins) outcome = v1 < v2 ? 1 : 2;
-  else outcome = v1 > v2 ? 1 : 2;
+  state.roundsPlayed++;
+  const v1 = cat.getVal(c1), v2 = cat.getVal(c2);
+  let outcome;
+  if(v1===v2) outcome='tie';
+  else if(cat.lowerWins) outcome = v1<v2 ? 1 : 2;
+  else outcome = v1>v2 ? 1 : 2;
 
   highlightStat('p1', cat.key, outcome===1?'win':(outcome===2?'lose':'tie'));
   highlightStat('p2', cat.key, outcome===2?'win':(outcome===1?'lose':'tie'));
 
   const banner = document.getElementById('result-banner');
 
-  if(outcome === 'tie'){
+  if(outcome==='tie'){
+    sfxTie();
     banner.textContent = "TIE! Cards go to the pot — next round decides all.";
     banner.classList.add('tie');
     state.pot.push(state.p1Deck.shift(), state.p2Deck.shift());
@@ -569,24 +836,28 @@ function resolveRound(cat, c1, c2){
     return;
   }
 
-  const winnerIsP1 = outcome === 1;
-  banner.textContent = winnerIsP1
-    ? c1.name + " WINS the round!"
-    : c2.name + " WINS the round!";
+  const winnerIsP1 = outcome===1;
+  if(winnerIsP1) sfxWin(); else sfxLose();
+  banner.textContent = winnerIsP1 ? c1.name+" WINS the round!" : c2.name+" WINS the round!";
   banner.classList.add(winnerIsP1 ? 'win' : 'lose');
 
   const wonCards = [state.p1Deck.shift(), state.p2Deck.shift(), ...state.pot];
   state.pot = [];
-  const potNote = wonCards.length > 2 ? ' + '+(wonCards.length-2)+' pot card(s)' : '';
+  const potNote = wonCards.length>2 ? ' + '+(wonCards.length-2)+' pot card(s)' : '';
 
   if(winnerIsP1){
     state.p1Deck.push(...shuffle(wonCards));
     state.turn = 1;
-    logLine('<span class="win">' + c1.name + '</span> beat ' + c2.name + ' on ' + cat.label + ' ('+cat.getDisplay(c1)+' vs '+cat.getDisplay(c2)+')'+potNote+'.');
+    state.p1RoundWins++;
+    if(cat.key==='weight') unlockAchievement('heavy_hitter');
+    if(cat.key==='rank') unlockAchievement('brains_over_brawn');
+    if(c1.name==='DWARF BOY') unlockAchievement('giant_slayer');
+    logLine('<span class="win">'+c1.name+'</span> beat '+c2.name+' on '+cat.label+' ('+cat.getDisplay(c1)+' vs '+cat.getDisplay(c2)+')'+potNote+'.');
   } else {
     state.p2Deck.push(...shuffle(wonCards));
     state.turn = 2;
-    logLine('<span class="lose">' + c2.name + '</span> beat ' + c1.name + ' on ' + cat.label + ' ('+cat.getDisplay(c2)+' vs '+cat.getDisplay(c1)+')'+potNote+'.');
+    state.p2RoundWins++;
+    logLine('<span class="lose">'+c2.name+'</span> beat '+c1.name+' on '+cat.label+' ('+cat.getDisplay(c2)+' vs '+cat.getDisplay(c1)+')'+potNote+'.');
   }
 
   state.awaitingReveal = false;
@@ -611,19 +882,307 @@ function logLine(html){
 
 function endGame(){
   state.gameOver = true;
-  showScreen('end');
-  const p1Won = state.p1Deck.length > 0;
-  const label2 = state.mode === 'ai' ? 'the Rival' : 'Player 2';
-  document.getElementById('end-title').textContent = p1Won ? "YOU TAKE THE DECK" : (state.mode==='ai' ? "THE HOUSE WINS" : "PLAYER 2 TAKES IT");
-  document.getElementById('end-sub').textContent = p1Won
-    ? "You hold all "+MASTER_DECK.length+" cards. "+label2+" has nothing left to call."
-    : label2 + " holds all " + MASTER_DECK.length + " cards. Run it back?";
+  const p1Won = state.p1Deck.length > state.p2Deck.length;
+  const label2 = state.mode==='ai' ? 'the Rival' : 'Player 2';
+
+  if(p1Won){ sfxWin(); setTimeout(sfxCoin, 400); } else { sfxLose(); }
+
+  profile.gamesPlayed++;
+  let coinsEarned, xpEarned;
+  if(p1Won){
+    profile.gamesWon++;
+    coinsEarned = 50; xpEarned = 100; profile.gems += 5;
+    unlockAchievement('first_win');
+    if(state.p2RoundWins===0) unlockAchievement('flawless');
+  } else {
+    coinsEarned = 10; xpEarned = 20;
+  }
+  profile.coins += coinsEarned; profile.xp += xpEarned;
+  if(profile.gamesPlayed>=5) unlockAchievement('rookie_no_more');
+  if(profile.gamesPlayed>=20) unlockAchievement('veteran');
+  if(profile.gamesWon>=5) unlockAchievement('champion');
+  if(profile.gamesWon>=20) unlockAchievement('legend');
+  saveProfile();
+
+  const resultTitle = document.getElementById('result-title');
+  const resultSub = document.getElementById('result-sub');
+  const resultDetail = document.getElementById('result-detail');
+  const resultCardImg = document.getElementById('result-card-img');
+
+  let detailWin, detailLose;
+  if(state.matchLength==='short'){
+    detailWin = 'You reduced '+label2+' down to just '+state.p2Deck.length+' card'+(state.p2Deck.length===1?'':'s')+'.';
+    detailLose = label2+' reduced you down to just '+state.p1Deck.length+' card'+(state.p1Deck.length===1?'':'s')+'.';
+  } else if(state.matchLength==='blitz15'){
+    detailWin = 'After 15 rounds, you led '+state.p1Deck.length+' to '+state.p2Deck.length+'.';
+    detailLose = 'After 15 rounds, '+label2+' led '+state.p2Deck.length+' to '+state.p1Deck.length+'.';
+  } else {
+    detailWin = 'You collected all '+MASTER_DECK.length+' cards.';
+    detailLose = label2+' holds all '+MASTER_DECK.length+' cards.';
+  }
+
+  if(p1Won){
+    resultTitle.textContent = 'WINNER!'; resultTitle.classList.remove('lose');
+    resultSub.textContent = 'YOU WIN!';
+    resultDetail.textContent = detailWin;
+    resultCardImg.src = (state.p1Deck[0] || MASTER_DECK[0]).img;
+  } else {
+    resultTitle.textContent = state.mode==='ai' ? 'DEFEATED' : (label2.toUpperCase()+' WINS');
+    resultTitle.classList.add('lose');
+    resultSub.textContent = label2.toUpperCase() + ' WINS!';
+    resultDetail.textContent = detailLose;
+    resultCardImg.src = (state.p2Deck[0] || MASTER_DECK[1]).img;
+  }
+  document.getElementById('result-rewards').textContent = '+'+coinsEarned+' Coins · +'+xpEarned+' XP';
+
+  showScreen('result');
+  refreshTopbar();
 }
 
-function resetToStart(){
-  document.getElementById('log').innerHTML = '';
-  showScreen('start');
+/* ---------------- 3D VIEWER ---------------- */
+let threeLoaded = false, threeLoading = false;
+let viewer3d = { renderer:null, scene:null, camera:null, mesh:null, raf:null, dragging:false, lastX:0, lastY:0, rotY:0.4, rotX:0.15, dist:3.2 };
+
+function loadScriptOnce(src){
+  return new Promise((resolve, reject)=>{
+    const existing = document.querySelector('script[data-src="'+src+'"]');
+    if(existing){ existing.dataset.loaded==='1' ? resolve() : existing.addEventListener('load',()=>resolve()); return; }
+    const s = document.createElement('script');
+    s.src = src; s.dataset.src = src;
+    s.onload = ()=>{ s.dataset.loaded='1'; resolve(); };
+    s.onerror = ()=> reject(new Error('Failed to load '+src));
+    document.head.appendChild(s);
+  });
 }
+
+async function ensureThree(){
+  if(threeLoaded) return;
+  await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js');
+  await loadScriptOnce('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js');
+  threeLoaded = true;
+}
+
+function open3DViewer(){
+  const card = currentModalCard;
+  if(!card || !card.model) return;
+  sfxTap();
+  document.getElementById('card-modal').classList.remove('show');
+  document.getElementById('viewer3d-status').textContent = 'Loading 3D model…';
+  document.getElementById('viewer3d-status').style.display = 'block';
+  document.getElementById('viewer3d-modal').classList.add('show');
+
+  ensureThree().then(()=>{
+    initViewer3D(card.model);
+  }).catch(()=>{
+    document.getElementById('viewer3d-status').textContent = "Couldn't load the 3D viewer — check your internet connection.";
+  });
+}
+
+function close3DViewer(){
+  document.getElementById('viewer3d-modal').classList.remove('show');
+  if(viewer3d.raf) cancelAnimationFrame(viewer3d.raf);
+  if(viewer3d.renderer){
+    viewer3d.renderer.dispose();
+    const wrap = document.getElementById('viewer3d-canvas-wrap');
+    wrap.innerHTML = '';
+  }
+  viewer3d.renderer = null; viewer3d.scene = null; viewer3d.mesh = null;
+}
+
+function initViewer3D(modelUrl){
+  const wrap = document.getElementById('viewer3d-canvas-wrap');
+  wrap.innerHTML = '';
+  const w = wrap.clientWidth || 300, h = wrap.clientHeight || 300;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, w/h, 0.1, 100);
+  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+  renderer.setSize(w, h);
+  wrap.appendChild(renderer.domElement);
+
+  const ambient = new THREE.AmbientLight(0x8899aa, 0.7);
+  scene.add(ambient);
+  const key = new THREE.DirectionalLight(0xfff2d0, 1.1);
+  key.position.set(3,5,4);
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0x5fd0e8, 0.6);
+  rim.position.set(-4,-2,-3);
+  scene.add(rim);
+
+  viewer3d.scene = scene; viewer3d.camera = camera; viewer3d.renderer = renderer;
+  viewer3d.rotY = 0.4; viewer3d.rotX = 0.15; viewer3d.dist = 3.2;
+
+  const loader = new THREE.OBJLoader();
+  loader.load(modelUrl, (obj)=>{
+    obj.traverse(child=>{
+      if(child.isMesh){
+        child.geometry.computeVertexNormals();
+        child.material = new THREE.MeshStandardMaterial({ color:0x3f9d63, metalness:0.45, roughness:0.35, emissive:0x0a2015, emissiveIntensity:0.3 });
+      }
+    });
+    scene.add(obj);
+    viewer3d.mesh = obj;
+    document.getElementById('viewer3d-status').style.display = 'none';
+    animateViewer3D();
+  }, undefined, ()=>{
+    document.getElementById('viewer3d-status').textContent = "Couldn't load the model file.";
+  });
+
+  setupViewer3DControls(wrap);
+}
+
+function animateViewer3D(){
+  if(!viewer3d.renderer || !viewer3d.mesh) return;
+  if(!viewer3d.dragging) viewer3d.rotY += 0.006;
+  const cx = Math.sin(viewer3d.rotY) * viewer3d.dist * Math.cos(viewer3d.rotX);
+  const cz = Math.cos(viewer3d.rotY) * viewer3d.dist * Math.cos(viewer3d.rotX);
+  const cy = Math.sin(viewer3d.rotX) * viewer3d.dist;
+  viewer3d.camera.position.set(cx, cy + 0.3, cz);
+  viewer3d.camera.lookAt(0, 0.15, 0);
+  viewer3d.renderer.render(viewer3d.scene, viewer3d.camera);
+  viewer3d.raf = requestAnimationFrame(animateViewer3D);
+}
+
+function setupViewer3DControls(wrap){
+  const onDown = (x,y)=>{ viewer3d.dragging=true; viewer3d.lastX=x; viewer3d.lastY=y; };
+  const onMove = (x,y)=>{
+    if(!viewer3d.dragging) return;
+    const dx = x - viewer3d.lastX, dy = y - viewer3d.lastY;
+    viewer3d.rotY += dx * 0.008;
+    viewer3d.rotX = Math.max(-0.8, Math.min(0.8, viewer3d.rotX + dy * 0.006));
+    viewer3d.lastX = x; viewer3d.lastY = y;
+  };
+  const onUp = ()=>{ viewer3d.dragging=false; };
+
+  wrap.addEventListener('pointerdown', e=>{ onDown(e.clientX,e.clientY); wrap.setPointerCapture(e.pointerId); });
+  wrap.addEventListener('pointermove', e=> onMove(e.clientX,e.clientY));
+  wrap.addEventListener('pointerup', onUp);
+  wrap.addEventListener('pointercancel', onUp);
+  wrap.addEventListener('wheel', e=>{
+    e.preventDefault();
+    viewer3d.dist = Math.max(1.6, Math.min(6, viewer3d.dist + e.deltaY*0.002));
+  }, { passive:false });
+}
+
+/* ---------------- AUDIO ---------------- */
+let audioCtx = null;
+let musicOn = true, sfxOn = true, musicTimer = null;
+
+function loadAudioSettings(){
+  try{
+    const s = JSON.parse(localStorage.getItem('rwa_audio_v1'));
+    if(s){ musicOn = s.musicOn !== false; sfxOn = s.sfxOn !== false; }
+  }catch(e){}
+}
+function saveAudioSettings(){ localStorage.setItem('rwa_audio_v1', JSON.stringify({musicOn, sfxOn})); }
+loadAudioSettings();
+
+function ensureAudio(){
+  if(!audioCtx){ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }
+  if(audioCtx.state==='suspended') audioCtx.resume();
+}
+
+function playTone(freq, startOffset, duration, type, vol){
+  if(!sfxOn || !audioCtx) return;
+  const t = audioCtx.currentTime + startOffset;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type || 'sine';
+  osc.frequency.setValueAtTime(freq, t);
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(vol||0.15, t+0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001, t+duration);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(t); osc.stop(t+duration+0.02);
+}
+
+function playMusicTone(freq, startOffset, duration, type, vol){
+  if(!musicOn || !audioCtx) return;
+  const t = audioCtx.currentTime + startOffset;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type || 'triangle';
+  osc.frequency.setValueAtTime(freq, t);
+  gain.gain.setValueAtTime(0, t);
+  gain.gain.linearRampToValueAtTime(vol||0.05, t+0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, t+duration);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(t); osc.stop(t+duration+0.02);
+}
+
+function playNoise(startOffset, duration, vol, useMusicGate){
+  if(useMusicGate ? !musicOn : !sfxOn) return;
+  if(!audioCtx) return;
+  const t = audioCtx.currentTime + startOffset;
+  const bufferSize = Math.max(1, Math.floor(audioCtx.sampleRate*duration));
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i=0;i<bufferSize;i++){ data[i] = (Math.random()*2-1) * (1 - i/bufferSize); }
+  const noise = audioCtx.createBufferSource();
+  noise.buffer = buffer;
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(vol||0.15, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t+duration);
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'highpass'; filter.frequency.value = 800;
+  noise.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+  noise.start(t); noise.stop(t+duration);
+}
+
+function sfxTap(){ ensureAudio(); playTone(600,0,0.08,'square',0.06); }
+function sfxFlip(){ ensureAudio(); playNoise(0,0.22,0.12,false); }
+function sfxWin(){ ensureAudio(); playTone(523,0,0.15,'triangle',0.16); playTone(659,0.12,0.15,'triangle',0.16); playTone(784,0.24,0.35,'triangle',0.18); }
+function sfxLose(){ ensureAudio(); playTone(392,0,0.2,'sawtooth',0.12); playTone(311,0.15,0.4,'sawtooth',0.12); }
+function sfxTie(){ ensureAudio(); playTone(440,0,0.12,'sine',0.13); playTone(440,0.16,0.12,'sine',0.13); }
+function sfxCoin(){ ensureAudio(); playTone(988,0,0.08,'square',0.1); playTone(1319,0.06,0.14,'square',0.1); }
+
+// Looping arena bassline — minor-key riff + soft hats, self-scheduling.
+const MUSIC_PATTERN = [
+  {f:110,d:0.35},{f:0,d:0.15},{f:130.8,d:0.35},{f:0,d:0.15},
+  {f:98,d:0.35},{f:0,d:0.15},{f:110,d:0.35},{f:0,d:0.15}
+];
+function startMusic(){
+  if(!musicOn) return;
+  ensureAudio();
+  if(musicTimer) return;
+  scheduleMusicBar();
+}
+function stopMusic(){ if(musicTimer){ clearTimeout(musicTimer); musicTimer=null; } }
+function scheduleMusicBar(){
+  if(!musicOn || !audioCtx){ musicTimer=null; return; }
+  let t=0;
+  MUSIC_PATTERN.forEach(step=>{
+    if(step.f>0) playMusicTone(step.f, t, step.d*0.9, 'triangle', 0.055);
+    t += step.d;
+  });
+  playNoise(0.35,0.06,0.025,true);
+  playNoise(1.05,0.06,0.025,true);
+  musicTimer = setTimeout(scheduleMusicBar, t*1000);
+}
+
+function toggleMusic(){
+  musicOn = !musicOn;
+  saveAudioSettings();
+  if(musicOn){ ensureAudio(); startMusic(); } else { stopMusic(); }
+  renderAudioUI();
+}
+function toggleSfx(){ sfxOn = !sfxOn; saveAudioSettings(); renderAudioUI(); sfxTap(); }
+function renderAudioUI(){
+  const m = document.getElementById('toggle-music');
+  const s = document.getElementById('toggle-sfx');
+  if(m) m.textContent = musicOn ? 'ON' : 'OFF';
+  if(s) s.textContent = sfxOn ? 'ON' : 'OFF';
+}
+
+document.addEventListener('pointerdown', function firstGesture(){
+  ensureAudio();
+  if(musicOn) startMusic();
+  document.removeEventListener('pointerdown', firstGesture);
+}, {once:true});
+
+/* ---------------- INIT ---------------- */
+refreshTopbar();
 </script>
 </body>
 </html>
