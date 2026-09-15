@@ -74,7 +74,7 @@ body.hide-topbar .topbar-app{ display:none; }
 .menu-hero-fade{ position:absolute; inset:0; background:linear-gradient(to bottom, rgba(11,12,15,0.1) 35%, var(--bg) 96%); }
 .menu3d-wrap{ position:absolute; inset:0; z-index:3; touch-action:none; }
 .menu3d-wrap canvas{ width:100% !important; height:100% !important; display:block; }
-.menu3d-caption{ position:absolute; bottom:10px; left:0; right:0; text-align:center; z-index:4; font-size:10px; letter-spacing:2px; color:var(--gold); text-shadow:0 1px 4px rgba(0,0,0,0.8); opacity:0.85; }
+.menu3d-caption{ position:absolute; bottom:10px; left:15px; right:0; text-align:left; z-index:4; font-size:10px; letter-spacing:2px; color:var(--gold); text-shadow:0 1px 4px rgba(0,0,0,0.8); opacity:0.85; }
 .menu-brand{ text-align:center; margin-top:-46px; position:relative; z-index:2; }
 .brand-big{ font-family:'Anton',sans-serif; font-size:58px; color:var(--gold); text-shadow:0 0 24px rgba(212,167,44,0.45); letter-spacing:2px; line-height:1; }
 .brand-sub{ font-size:12px; letter-spacing:4px; color:var(--off); margin-top:2px; }
@@ -552,7 +552,7 @@ const MASTER_DECK = [
   { name: "NIGHT HAWK", img: "night-hawk.jpg", rank: 8, heightIn: 78, heightLabel: "6'6\"", weight: 275, matchesLabel: "470", matchesVal: 470, biceps: 21, chest: 52 },
   { name: "RAGE MONK", img: "rage-monk.jpg", rank: 9, heightIn: 74, heightLabel: "6'2\"", weight: 260, matchesLabel: "480", matchesVal: 480, biceps: 22, chest: 58 },
   { name: "BLOOD RAZOR", img: "blood-razor.jpg", rank: 10, heightIn: 76, heightLabel: "6'4\"", weight: 300, matchesLabel: "520", matchesVal: 520, biceps: 24, chest: 62 },
-  { name: "STEEL VIPER", img: "steel-viper.jpg", rank: 11, heightIn: 73, heightLabel: "6'1\"", weight: 245, matchesLabel: "460", matchesVal: 460, biceps: 21, chest: 50 },
+  { name: "STEEL VIPER", img: "steel-viper.jpg", rank: 11, heightIn: 73, heightLabel: "6'1\"", weight: 245, matchesLabel: "460", matchesVal: 460, biceps: 21, chest: 50, model: "steel-viper.glb" },
   { name: "DESERT WOLF", img: "desert-wolf.jpg", rank: 12, heightIn: 75, heightLabel: "6'3\"", weight: 285, matchesLabel: "430", matchesVal: 430, biceps: 23, chest: 60 },
   { name: "THUNDER VEER", img: "thunder-veer.jpg", rank: 13, heightIn: 77, heightLabel: "6'5\"", weight: 295, matchesLabel: "500", matchesVal: 500, biceps: 24, chest: 56 },
   { name: "FROST GIANT", img: "frost-giant.jpg", rank: 14, heightIn: 80, heightLabel: "6'8\"", weight: 365, matchesLabel: "410", matchesVal: 410, biceps: 26, chest: 68 },
@@ -1312,6 +1312,18 @@ function open3DViewer(){
 function close3DViewer(){
   document.getElementById('viewer3d-modal').classList.remove('show');
   if(activeModalViewer){ activeModalViewer.dispose(); activeModalViewer = null; }
+}
+
+// --- Main Menu hero viewer (decorative, auto-rotate only) ---
+let menuHeroViewer = null;
+function initMenuHero3D(){
+  const wrap = document.getElementById('menu3d-wrap');
+  if(!wrap) return;
+  ensureThree().then(()=>{
+    menuHeroViewer = createSpinningViewer(wrap, 'steel-viper.glb', {
+      interactive: true, autoRotate: true, autoSpeed: 0.005, dist: 3.4, startRotY: 0.6
+    });
+  }).catch(()=>{ /* silently fall back to the static hero photo */ });
 }
 
 /* ---------------- AUDIO ---------------- */
