@@ -1278,6 +1278,8 @@ function createSpinningViewer(container, modelUrl, opts){
         child.material = new THREE.MeshStandardMaterial({ vertexColors:true, metalness:0.12, roughness:0.75 });
       }
     });
+    obj.rotation.y = st.rotY;
+    obj.rotation.x = st.rotX * 0.3;
     scene.add(obj);
     st.mesh = obj;
     if(opts.onLoaded) opts.onLoaded();
@@ -1287,15 +1289,14 @@ function createSpinningViewer(container, modelUrl, opts){
   function animate(){
     if(!st.renderer || !st.mesh) return;
     if(st.autoRotate && !st.dragging) st.rotY += st.autoSpeed;
+    st.mesh.rotation.y = st.rotY;
     st.time += 0.016;
     // Real stage lights don't swing around — just a faint intensity flicker for life.
     stageLights.forEach((sl, i)=>{
       sl.spot.intensity = 3.0 + Math.sin(st.time*1.3 + i*2)*0.35;
     });
-    const cx = Math.sin(st.rotY) * st.dist * Math.cos(st.rotX);
-    const cz = Math.cos(st.rotY) * st.dist * Math.cos(st.rotX);
-    const cy = Math.sin(st.rotX) * st.dist;
-    st.camera.position.set(cx, cy + 0.22, cz);
+    // Camera and lights stay completely still — only the model itself turns.
+    st.camera.position.set(0, 0.32, st.dist);
     st.camera.lookAt(0, 0.05, 0);
     st.renderer.render(st.scene, st.camera);
     st.raf = requestAnimationFrame(animate);
@@ -1304,10 +1305,10 @@ function createSpinningViewer(container, modelUrl, opts){
   if(opts.interactive!==false){
     const onDown=(x,y)=>{ st.dragging=true; st.lastX=x; st.lastY=y; };
     const onMove=(x,y)=>{
-      if(!st.dragging) return;
+      if(!st.dragging || !st.mesh) return;
       const dx=x-st.lastX, dy=y-st.lastY;
       st.rotY += dx*0.008;
-      st.rotX = Math.max(-0.8, Math.min(0.8, st.rotX + dy*0.006));
+      st.mesh.rotation.x = Math.max(-0.5, Math.min(0.5, st.mesh.rotation.x + dy*0.005));
       st.lastX=x; st.lastY=y;
     };
     const onUp=()=>{ st.dragging=false; };
