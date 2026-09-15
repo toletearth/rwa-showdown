@@ -72,14 +72,9 @@ body.hide-topbar .topbar-app{ display:none; }
 .menu-hero{ position:relative; margin:0 -14px; height:210px; overflow:hidden; }
 .menu-hero img{ width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
 .menu-hero-fade{ position:absolute; inset:0; background:linear-gradient(to bottom, rgba(11,12,15,0.1) 35%, var(--bg) 96%); }
-.menu3d-wrap{ position:absolute; inset:0; z-index:3; touch-action:none; }
+.menu3d-wrap{ position:absolute; left:0; top:0; width:46%; height:100%; z-index:3; touch-action:none; }
 .menu3d-wrap canvas{ width:100% !important; height:100% !important; display:block; }
-/* Shift only the menu render visually left; this does NOT change Steel Viper's 3D axis. */
-.menu-hero .menu3d-wrap canvas{
-  transform:translateX(-58px);
-}
-
-.menu3d-caption{ position:absolute; bottom:10px; left:0; right:0; text-align:center; z-index:4; font-size:10px; letter-spacing:2px; color:var(--gold); text-shadow:0 1px 4px rgba(0,0,0,0.8); opacity:0.85; }
+.menu3d-caption{ position:absolute; bottom:10px; left:0; width:46%; text-align:center; z-index:4; font-size:9.5px; letter-spacing:1.5px; color:var(--gold); text-shadow:0 1px 4px rgba(0,0,0,0.8); opacity:0.85; }
 .menu-brand{ text-align:center; margin-top:-46px; position:relative; z-index:2; }
 .brand-big{ font-family:'Anton',sans-serif; font-size:58px; color:var(--gold); text-shadow:0 0 24px rgba(212,167,44,0.45); letter-spacing:2px; line-height:1; }
 .brand-sub{ font-size:12px; letter-spacing:4px; color:var(--off); margin-top:2px; }
@@ -174,11 +169,6 @@ body.hide-topbar .topbar-app{ display:none; }
   animation: foilShift 3.5s linear infinite;
 }
 @keyframes foilShift{ 0%{ background-position:0% 0%; } 100%{ background-position:250% 250%; } }
-
-/* Keep the 3D Steel Viper comfortably inside the hero on narrow phones. */
-@media (max-width: 380px){
-  .menu3d-wrap{ transform:translateX(5px); }
-}
 .card-modal-inner .foil-overlay{ border-radius:10px; }
 
 .frame-classic{ border-color: var(--gold) !important; }
@@ -234,7 +224,6 @@ body.hide-topbar .topbar-app{ display:none; }
   position:absolute; left:65.5%; width:32%; border-radius:5px; border:2px solid transparent;
   background:rgba(0,0,0,0); opacity:0; transition: opacity .3s ease, border-color .3s ease, background .3s ease;
   pointer-events:none;
-  z-index:2;
 }
 .stat-highlight.show{ opacity:1; }
 .stat-highlight.win{ border-color:#6fe38a; background:rgba(111,227,138,0.28); box-shadow:0 0 14px rgba(111,227,138,0.65); }
@@ -625,14 +614,12 @@ CATEGORIES.forEach(cat=>{
 });
 
 const STAT_BOX = {
-  // Slightly lowered so the red/green result highlight sits cleanly
-  // over the correct stat row instead of covering the row above it.
-  rank:    { top: 4.5,  bottom: 16.0 },
-  height:  { top: 27.0, bottom: 34.5 },
-  weight:  { top: 35.5, bottom: 42.5 },
-  matches: { top: 43.5, bottom: 52.5 },
-  biceps:  { top: 53.5, bottom: 60.0 },
-  chest:   { top: 61.0, bottom: 67.5 }
+  rank:    { top: 3.5,  bottom: 16 },
+  height:  { top: 26,   bottom: 34.5 },
+  weight:  { top: 34.5, bottom: 42.5 },
+  matches: { top: 42.5, bottom: 52.5 },
+  biceps:  { top: 52.5, bottom: 60 },
+  chest:   { top: 60,   bottom: 67.5 }
 };
 
 /* ---------------- PROFILE / PERSISTENCE ---------------- */
@@ -1229,33 +1216,27 @@ function createSpinningViewer(container, modelUrl, opts){
   const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
   renderer.setSize(w, h);
-  renderer.outputEncoding = THREE.sRGBEncoding;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
   container.appendChild(renderer.domElement);
 
-  // Cinematic lighting for the 3D warrior
-  scene.add(new THREE.AmbientLight(0x667080, 0.62));
+  const baseAmbient = opts.partyLights ? 0.35 : 0.85;
+  scene.add(new THREE.AmbientLight(0x8899aa, baseAmbient));
+  const key = new THREE.DirectionalLight(0xfff2d0, opts.partyLights ? 0.5 : 1.05); key.position.set(3,5,4); scene.add(key);
+  const rim = new THREE.DirectionalLight(0x5fd0e8, opts.partyLights ? 0.2 : 0.45); rim.position.set(-4,-2,-3); scene.add(rim);
 
-  // Main warm/gold light from the upper-left/front
-  const key = new THREE.DirectionalLight(0xffe7a3, 1.75);
-  key.position.set(-4, 5, 5);
-  scene.add(key);
-
-  // Soft front fill so the face/body does not become too dark
-  const fill = new THREE.DirectionalLight(0xffffff, 0.55);
-  fill.position.set(-2, 1, 5);
-  scene.add(fill);
-
-  // Cool rim light separates Steel Viper from the background
-  const rim = new THREE.DirectionalLight(0x5fd0e8, 0.75);
-  rim.position.set(4, 3, -4);
-  scene.add(rim);
-
-  // Small gold accent light for a premium RWA look
-  const accent = new THREE.PointLight(0xd4a72c, 0.65, 7);
-  accent.position.set(-2.5, 1.5, 2.5);
-  scene.add(accent);
+  let partyLights = [];
+  if(opts.partyLights){
+    const rig = [
+      { color:0xff2d6a, radius:1.9, height:0.6,  speed:0.9,  phase:0 },      // hot pink
+      { color:0x33e0ff, radius:1.7, height:-0.2, speed:-1.15, phase:2.1 },   // cyan
+      { color:0xffd23f, radius:2.1, height:0.9,  speed:0.7,  phase:4.2 },   // gold
+      { color:0xa64bff, radius:1.6, height:0.1,  speed:-0.85, phase:1.4 }    // violet
+    ];
+    partyLights = rig.map(cfg=>{
+      const l = new THREE.PointLight(cfg.color, 1.4, 6, 2);
+      scene.add(l);
+      return Object.assign({ light:l, baseIntensity:1.4 }, cfg);
+    });
+  }
 
   const st = {
     renderer, scene, camera, mesh:null, raf:null,
@@ -1265,7 +1246,7 @@ function createSpinningViewer(container, modelUrl, opts){
     dist: opts.dist||3.1,
     autoRotate: opts.autoRotate!==false,
     autoSpeed: opts.autoSpeed||0.006,
-    // Keep the original model transform/axis unchanged.
+    time: 0
   };
 
   const loader = new THREE.GLTFLoader();
@@ -1276,7 +1257,6 @@ function createSpinningViewer(container, modelUrl, opts){
         child.material = new THREE.MeshStandardMaterial({ vertexColors:true, metalness:0.12, roughness:0.75 });
       }
     });
-    // Keep the GLB at its original position, scale and axis.
     scene.add(obj);
     st.mesh = obj;
     if(opts.onLoaded) opts.onLoaded();
@@ -1286,6 +1266,12 @@ function createSpinningViewer(container, modelUrl, opts){
   function animate(){
     if(!st.renderer || !st.mesh) return;
     if(st.autoRotate && !st.dragging) st.rotY += st.autoSpeed;
+    st.time += 0.016;
+    partyLights.forEach(pl=>{
+      const t = st.time * pl.speed + pl.phase;
+      pl.light.position.set(Math.cos(t)*pl.radius, pl.height + Math.sin(t*1.3)*0.35, Math.sin(t)*pl.radius);
+      pl.light.intensity = pl.baseIntensity * (0.65 + 0.35*Math.sin(t*2.2));
+    });
     const cx = Math.sin(st.rotY) * st.dist * Math.cos(st.rotX);
     const cz = Math.cos(st.rotY) * st.dist * Math.cos(st.rotX);
     const cy = Math.sin(st.rotX) * st.dist;
@@ -1358,11 +1344,7 @@ function initMenuHero3D(){
   if(!wrap) return;
   ensureThree().then(()=>{
     menuHeroViewer = createSpinningViewer(wrap, 'steel-viper.glb', {
-      interactive: true,
-      autoRotate: true,
-      autoSpeed: 0.005,
-      dist: 3.4,
-      startRotY: 0.6
+      interactive: true, autoRotate: true, autoSpeed: 0.005, dist: 3.4, startRotY: 0.6, partyLights: true
     });
   }).catch(()=>{ /* silently fall back to the static hero photo */ });
 }
