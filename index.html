@@ -72,6 +72,9 @@ body.hide-topbar .topbar-app{ display:none; }
 .menu-hero{ position:relative; margin:0 -14px; height:210px; overflow:hidden; }
 .menu-hero img{ width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
 .menu-hero-fade{ position:absolute; inset:0; background:linear-gradient(to bottom, rgba(11,12,15,0.1) 35%, var(--bg) 96%); }
+.menu3d-wrap{ position:absolute; inset:0; z-index:3; touch-action:none; }
+.menu3d-wrap canvas{ width:100% !important; height:100% !important; display:block; }
+.menu3d-caption{ position:absolute; bottom:10px; left:0; right:0; text-align:center; z-index:4; font-size:10px; letter-spacing:2px; color:var(--gold); text-shadow:0 1px 4px rgba(0,0,0,0.8); opacity:0.85; }
 .menu-brand{ text-align:center; margin-top:-46px; position:relative; z-index:2; }
 .brand-big{ font-family:'Anton',sans-serif; font-size:58px; color:var(--gold); text-shadow:0 0 24px rgba(212,167,44,0.45); letter-spacing:2px; line-height:1; }
 .brand-sub{ font-size:12px; letter-spacing:4px; color:var(--off); margin-top:2px; }
@@ -139,6 +142,45 @@ body.hide-topbar .topbar-app{ display:none; }
 .ach-icon{ font-size:26px; width:32px; text-align:center; flex-shrink:0; }
 .ach-title{ font-family:'Anton',sans-serif; font-size:14px; letter-spacing:0.3px; }
 .ach-desc{ font-size:11.5px; color:var(--dim); margin-top:1px; }
+
+/* SHOP */
+.shop-list{ display:flex; flex-direction:column; gap:10px; }
+.shop-item{ display:flex; align-items:center; gap:12px; background:var(--bg2); border:1px solid var(--steel-line); border-radius:8px; padding:12px 14px; }
+.shop-item-swatch{ width:44px; height:44px; border-radius:50%; flex-shrink:0; background:var(--bg); }
+.shop-item-text{ flex:1; }
+.shop-item-title{ font-family:'Anton',sans-serif; font-size:14px; letter-spacing:0.3px; }
+.shop-item-cost{ font-size:11.5px; color:var(--dim); margin-top:1px; }
+.shop-item-btn{ font-family:'Anton',sans-serif; letter-spacing:0.5px; font-size:11px; padding:8px 14px; border-radius:5px; border:none; cursor:pointer; flex-shrink:0; }
+.shop-item-btn.buy{ background:var(--blood); color:#fff; }
+.shop-item-btn.equip{ background:var(--bg); color:var(--off); border:1px solid var(--steel-line); }
+.shop-item-btn.equipped{ background:#6fe38a; color:#0b0c0f; cursor:default; }
+
+.foil-card{ position:relative; }
+.foil-card .cc-unlock-btn{
+  position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.82); color:var(--gold);
+  font-size:9.5px; font-weight:700; letter-spacing:0.3px; text-align:center; padding:5px 2px; border:none; cursor:pointer;
+}
+.foil-owned-badge{ position:absolute; top:5px; right:5px; background:rgba(0,0,0,0.7); border-radius:4px; padding:2px 5px; font-size:12px; }
+.foil-overlay{
+  position:absolute; inset:0; pointer-events:none;
+  background: linear-gradient(115deg, transparent 15%, rgba(255,0,170,0.45) 30%, rgba(0,255,220,0.45) 45%, rgba(255,225,0,0.45) 60%, transparent 80%);
+  background-size:250% 250%;
+  mix-blend-mode: color-dodge;
+  animation: foilShift 3.5s linear infinite;
+}
+@keyframes foilShift{ 0%{ background-position:0% 0%; } 100%{ background-position:250% 250%; } }
+.card-modal-inner .foil-overlay{ border-radius:10px; }
+
+.frame-classic{ border-color: var(--gold) !important; }
+.frame-silver{ border-color: #c9d1d9 !important; }
+.frame-ice{ border-color: var(--ice) !important; }
+.frame-blood{ border-color: var(--blood) !important; }
+.frame-emerald{ border-color: #3fae6a !important; }
+.frame-royal{
+  border-color: var(--gold) !important;
+  animation: royalHue 3s linear infinite;
+}
+@keyframes royalHue{ 0%{ filter:hue-rotate(0deg);} 100%{ filter:hue-rotate(360deg);} }
 
 .rules-strip{
   background: var(--bg2); border: 1px solid var(--steel-line); border-radius: 6px;
@@ -250,6 +292,8 @@ body.hide-topbar .topbar-app{ display:none; }
     <div class="menu-hero">
       <img src="sharp-edge.jpg" alt="">
       <div class="menu-hero-fade"></div>
+      <div class="menu3d-wrap" id="menu3d-wrap"></div>
+      <div class="menu3d-caption">STEEL VIPER · #11</div>
     </div>
     <div class="menu-brand">
       <div class="brand-big">RWA</div>
@@ -259,6 +303,7 @@ body.hide-topbar .topbar-app{ display:none; }
     <div class="menu-buttons">
       <button class="btn" onclick="showScreen('mode')">⚔ PLAY GAME</button>
       <button class="btn ghost" onclick="showScreen('collection')">🎴 MY COLLECTION</button>
+      <button class="btn ghost" onclick="showScreen('shop')">🛒 SHOP</button>
       <button class="btn ghost" onclick="showScreen('rules')">📖 GAME RULES</button>
       <button class="btn ghost" onclick="showScreen('settings')">⚙ SETTINGS</button>
     </div>
@@ -331,6 +376,7 @@ body.hide-topbar .topbar-app{ display:none; }
     <div class="card-modal-inner">
       <button class="card-modal-close" onclick="document.getElementById('card-modal').classList.remove('show')">✕</button>
       <img id="card-modal-img" src="" alt="">
+      <div class="foil-overlay" id="card-modal-foil" style="display:none;"></div>
       <button class="btn view3d-btn" id="view3d-btn" style="display:none;" onclick="open3DViewer()">🔄 View in 3D</button>
     </div>
   </div>
@@ -362,6 +408,7 @@ body.hide-topbar .topbar-app{ display:none; }
     </div>
     <div class="profile-list">
       <div class="profile-list-item" onclick="showScreen('collection')"><span>🎴 My Collection</span><span>52/52 ›</span></div>
+      <div class="profile-list-item" onclick="showScreen('shop')"><span>🛒 Shop</span><span>›</span></div>
       <div class="profile-list-item" onclick="showScreen('achievements')"><span>🏆 Achievements</span><span id="profile-ach-count">0/10 ›</span></div>
       <div class="profile-list-item" onclick="showScreen('rules')"><span>📖 Game Rules</span><span>›</span></div>
       <div class="profile-list-item" onclick="showScreen('settings')"><span>⚙ Settings</span><span>›</span></div>
@@ -373,6 +420,29 @@ body.hide-topbar .topbar-app{ display:none; }
   <div class="screen" id="screen-achievements">
     <div class="subheader"><button class="back-btn" onclick="showScreen('profile')">←</button><div class="subheader-title">🏆 ACHIEVEMENTS</div></div>
     <div id="ach-list"></div>
+  </div>
+
+  <!-- SHOP -->
+  <div class="screen" id="screen-shop">
+    <div class="subheader"><button class="back-btn" onclick="showScreen('menu')">←</button><div class="subheader-title">🛒 SHOP</div></div>
+    <div class="collection-tabs">
+      <button class="tab active" data-shoptab="foils" onclick="setShopTab('foils')">🎴 FOILS</button>
+      <button class="tab" data-shoptab="backs" onclick="setShopTab('backs')">🂠 CARD BACKS</button>
+      <button class="tab" data-shoptab="frames" onclick="setShopTab('frames')">🖼 FRAMES</button>
+    </div>
+    <div class="shop-panel" id="shop-panel-foils">
+      <div class="rules-strip" style="margin-bottom:12px;">Unlock a holographic foil version of any warrior for your collection. Purely cosmetic — battles always use the standard deck.</div>
+      <input class="search-box" id="foil-search" placeholder="Search warrior..." oninput="renderFoilShop()">
+      <div class="collection-grid" id="foil-shop-grid"></div>
+    </div>
+    <div class="shop-panel" id="shop-panel-backs" style="display:none;">
+      <div class="rules-strip" style="margin-bottom:12px;">Recolor the card back shown during battles.</div>
+      <div class="shop-list" id="backs-shop-list"></div>
+    </div>
+    <div class="shop-panel" id="shop-panel-frames" style="display:none;">
+      <div class="rules-strip" style="margin-bottom:12px;">A new ring around your avatar in the top bar and profile.</div>
+      <div class="shop-list" id="frames-shop-list"></div>
+    </div>
   </div>
 
   <!-- RULES -->
@@ -392,9 +462,13 @@ body.hide-topbar .topbar-app{ display:none; }
     <div class="profile-list">
       <div class="profile-list-item" onclick="toggleMusic()"><span>🎵 Music</span><span id="toggle-music">ON</span></div>
       <div class="profile-list-item" onclick="toggleSfx()"><span>🔊 Sound Effects</span><span id="toggle-sfx">ON</span></div>
+      <div class="profile-list-item" onclick="document.getElementById('music-folder-input').click()"><span>📁 Choose Music Folder</span><span>›</span></div>
+      <input type="file" id="music-folder-input" webkitdirectory multiple accept="audio/*" style="display:none;" onchange="handleFolderPick(this.files)">
+      <div class="profile-list-item" id="clear-playlist-row" onclick="clearPlaylist()" style="display:none;"><span>🗑 Remove Custom Playlist</span><span>›</span></div>
       <div class="profile-list-item" onclick="resetProgress()"><span>🗑 Reset Progress</span><span>›</span></div>
     </div>
-    <div class="rules-strip" style="margin-top:14px;">RWA Showdown is a fan-made Top Trumps&ndash;style card game built around the Ring Warriors Alliance roster. Progress (coins, XP, achievements) is saved locally on this device only &mdash; it won't sync across devices or browsers.</div>
+    <div class="rules-strip" id="playlist-status" style="margin-top:12px;">No custom tracks — using built-in music. Pick a folder of MP3s to use your own instead.</div>
+    <div class="rules-strip" style="margin-top:14px;">RWA Showdown is a fan-made Top Trumps&ndash;style card game built around the Ring Warriors Alliance roster. Progress (coins, XP, achievements, custom music) is saved locally on this device only &mdash; it won't sync across devices or browsers.</div>
   </div>
 
   <!-- ARENA -->
@@ -478,7 +552,7 @@ const MASTER_DECK = [
   { name: "NIGHT HAWK", img: "night-hawk.jpg", rank: 8, heightIn: 78, heightLabel: "6'6\"", weight: 275, matchesLabel: "470", matchesVal: 470, biceps: 21, chest: 52 },
   { name: "RAGE MONK", img: "rage-monk.jpg", rank: 9, heightIn: 74, heightLabel: "6'2\"", weight: 260, matchesLabel: "480", matchesVal: 480, biceps: 22, chest: 58 },
   { name: "BLOOD RAZOR", img: "blood-razor.jpg", rank: 10, heightIn: 76, heightLabel: "6'4\"", weight: 300, matchesLabel: "520", matchesVal: 520, biceps: 24, chest: 62 },
-  { name: "STEEL VIPER", img: "steel-viper.jpg", rank: 11, heightIn: 73, heightLabel: "6'1\"", weight: 245, matchesLabel: "460", matchesVal: 460, biceps: 21, chest: 50, model: "steel-viper.obj" },
+  { name: "STEEL VIPER", img: "steel-viper.jpg", rank: 11, heightIn: 73, heightLabel: "6'1\"", weight: 245, matchesLabel: "460", matchesVal: 460, biceps: 21, chest: 50, model: "steel-viper.glb" },
   { name: "DESERT WOLF", img: "desert-wolf.jpg", rank: 12, heightIn: 75, heightLabel: "6'3\"", weight: 285, matchesLabel: "430", matchesVal: 430, biceps: 23, chest: 60 },
   { name: "THUNDER VEER", img: "thunder-veer.jpg", rank: 13, heightIn: 77, heightLabel: "6'5\"", weight: 295, matchesLabel: "500", matchesVal: 500, biceps: 24, chest: 56 },
   { name: "FROST GIANT", img: "frost-giant.jpg", rank: 14, heightIn: 80, heightLabel: "6'8\"", weight: 365, matchesLabel: "410", matchesVal: 410, biceps: 26, chest: 68 },
@@ -531,6 +605,14 @@ const CATEGORIES = [
   { key: "chest",   label: "Chest",   icon:"🛡️", lowerWins: false, getVal: c => c.chest,       getDisplay: c => c.chest + '"' }
 ];
 
+// Deck-wide min/max per category, used so the AI can judge how strong a stat
+// really is (percentile-based) instead of comparing raw numbers on different scales.
+const CATEGORY_STATS = {};
+CATEGORIES.forEach(cat=>{
+  const vals = MASTER_DECK.map(c=>cat.getVal(c));
+  CATEGORY_STATS[cat.key] = { min: Math.min(...vals), max: Math.max(...vals) };
+});
+
 const STAT_BOX = {
   rank:    { top: 3.5,  bottom: 16 },
   height:  { top: 26,   bottom: 34.5 },
@@ -541,10 +623,23 @@ const STAT_BOX = {
 };
 
 /* ---------------- PROFILE / PERSISTENCE ---------------- */
-function defaultProfile(){ return { name:'Player1', coins:1250, gems:50, xp:0, gamesPlayed:0, gamesWon:0 }; }
+function defaultProfile(){
+  return {
+    name:'Player1', coins:1250, gems:50, xp:0, gamesPlayed:0, gamesWon:0,
+    ownedCardBacks:['gold'], equippedCardBack:'gold',
+    ownedFrames:['classic'], equippedFrame:'classic',
+    ownedFoils:[]
+  };
+}
+function ensureProfileShape(){
+  // Merge in any new fields for profiles saved before the Shop existed.
+  const d = defaultProfile();
+  Object.keys(d).forEach(k=>{ if(profile[k]===undefined) profile[k] = d[k]; });
+}
 function loadProfile(){ try{ const p = JSON.parse(localStorage.getItem('rwa_profile_v1')); return p || defaultProfile(); }catch(e){ return defaultProfile(); } }
 function saveProfile(){ localStorage.setItem('rwa_profile_v1', JSON.stringify(profile)); }
 let profile = loadProfile();
+ensureProfileShape();
 
 function loadAchievements(){ try{ return JSON.parse(localStorage.getItem('rwa_achievements_v1')) || {}; }catch(e){ return {}; } }
 function saveAchievements(){ localStorage.setItem('rwa_achievements_v1', JSON.stringify(achievements)); }
@@ -591,6 +686,7 @@ function refreshTopbar(){
   document.getElementById('tb-rank').textContent = rankTitle(level);
   document.getElementById('tb-coins').textContent = profile.coins;
   document.getElementById('tb-gems').textContent = profile.gems;
+  applyFrame();
 }
 
 function refreshProfileScreen(){
@@ -667,9 +763,12 @@ function renderCollection(){
   }
   filtered.forEach(c=>{
     const div = document.createElement('div');
-    div.className = 'collection-card';
+    const owned = profile.ownedFoils.includes(c.rank);
+    div.className = 'collection-card' + (owned ? ' foil-card' : '');
     div.onclick = ()=> openCardModal(c);
-    div.innerHTML = '<div class="cc-rank">#'+c.rank+'</div><img src="'+c.img+'" loading="lazy" alt=""><div class="cc-name">'+c.name+'</div>';
+    div.innerHTML = '<div class="cc-rank">#'+c.rank+'</div><img src="'+c.img+'" loading="lazy" alt="">'
+      + (owned ? '<div class="foil-overlay"></div><div class="foil-owned-badge">✨</div>' : '')
+      + '<div class="cc-name">'+c.name+'</div>';
     grid.appendChild(div);
   });
 }
@@ -681,7 +780,146 @@ function openCardModal(c){
   if(viewedCards.size>=52) unlockAchievement('curator');
   document.getElementById('card-modal-img').src = c.img;
   document.getElementById('view3d-btn').style.display = c.model ? 'block' : 'none';
+  document.getElementById('card-modal-foil').style.display = profile.ownedFoils.includes(c.rank) ? 'block' : 'none';
   document.getElementById('card-modal').classList.add('show');
+}
+
+/* ---------------- SHOP ---------------- */
+const CARD_BACK_SKINS = [
+  { id:'gold', name:'Golden (Default)', cost:0, filter:'none' },
+  { id:'crimson', name:'Crimson', cost:80, filter:'hue-rotate(320deg) saturate(1.4)' },
+  { id:'ice', name:'Frost', cost:80, filter:'hue-rotate(180deg) saturate(1.3)' },
+  { id:'toxic', name:'Toxic', cost:80, filter:'hue-rotate(90deg) saturate(1.5)' },
+  { id:'shadow', name:'Shadow', cost:100, filter:'grayscale(0.85) brightness(0.65)' },
+  { id:'royal', name:'Royal Purple', cost:120, filter:'hue-rotate(250deg) saturate(1.4)' }
+];
+const FRAME_STYLES = [
+  { id:'classic', name:'Classic Gold', cost:0, cls:'frame-classic' },
+  { id:'silver', name:'Silver', cost:150, cls:'frame-silver' },
+  { id:'ice', name:'Ice', cost:150, cls:'frame-ice' },
+  { id:'blood', name:'Blood', cost:150, cls:'frame-blood' },
+  { id:'emerald', name:'Emerald', cost:200, cls:'frame-emerald' },
+  { id:'royal', name:'Royal (animated)', cost:300, cls:'frame-royal' }
+];
+const FOIL_COST = 100;
+
+function setShopTab(tab){
+  document.querySelectorAll('#screen-shop .tab').forEach(t=> t.classList.toggle('active', t.dataset.shoptab===tab));
+  ['foils','backs','frames'].forEach(t=>{
+    document.getElementById('shop-panel-'+t).style.display = (t===tab) ? 'block' : 'none';
+  });
+  if(tab==='foils') renderFoilShop();
+  if(tab==='backs') renderBacksShop();
+  if(tab==='frames') renderFramesShop();
+}
+
+function renderFoilShop(){
+  const grid = document.getElementById('foil-shop-grid');
+  const q = (document.getElementById('foil-search').value||'').trim().toLowerCase();
+  grid.innerHTML = '';
+  MASTER_DECK.filter(c=> !q || c.name.toLowerCase().includes(q)).forEach(c=>{
+    const owned = profile.ownedFoils.includes(c.rank);
+    const div = document.createElement('div');
+    div.className = 'collection-card' + (owned ? ' foil-card' : '');
+    div.innerHTML = '<div class="cc-rank">#'+c.rank+'</div><img src="'+c.img+'" loading="lazy" alt="">'
+      + (owned ? '<div class="foil-overlay"></div><div class="foil-owned-badge">✨</div>' : '')
+      + '<div class="cc-name">'+c.name+'</div>'
+      + (owned ? '' : '<button class="cc-unlock-btn" onclick="event.stopPropagation(); buyFoil('+c.rank+')">🪙 '+FOIL_COST+'</button>');
+    grid.appendChild(div);
+  });
+}
+function buyFoil(rank){
+  if(profile.ownedFoils.includes(rank)) return;
+  if(profile.coins < FOIL_COST){ sfxLose(); alert('Not enough coins. You need '+FOIL_COST+'.'); return; }
+  profile.coins -= FOIL_COST;
+  profile.ownedFoils.push(rank);
+  saveProfile();
+  sfxCoin();
+  refreshTopbar();
+  renderFoilShop();
+}
+
+function renderBacksShop(){
+  const list = document.getElementById('backs-shop-list');
+  list.innerHTML = '';
+  CARD_BACK_SKINS.forEach(s=>{
+    const owned = profile.ownedCardBacks.includes(s.id);
+    const equipped = profile.equippedCardBack===s.id;
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+    const swatch = '<div class="shop-item-swatch"><img src="card-back.jpg" style="width:100%;height:100%;border-radius:50%;object-fit:cover;filter:'+s.filter+';"></div>';
+    let btn;
+    if(equipped) btn = '<button class="shop-item-btn equipped" disabled>✓ Equipped</button>';
+    else if(owned) btn = '<button class="shop-item-btn equip" onclick="equipCardBack(\''+s.id+'\')">Equip</button>';
+    else btn = '<button class="shop-item-btn buy" onclick="buyCardBack(\''+s.id+'\')">🪙 '+s.cost+'</button>';
+    div.innerHTML = swatch + '<div class="shop-item-text"><div class="shop-item-title">'+s.name+'</div><div class="shop-item-cost">'+(s.cost===0?'Included':'🪙 '+s.cost+' coins')+'</div></div>' + btn;
+    list.appendChild(div);
+  });
+}
+function buyCardBack(id){
+  const skin = CARD_BACK_SKINS.find(s=>s.id===id);
+  if(!profile.ownedCardBacks.includes(id)){
+    if(profile.coins < skin.cost){ sfxLose(); alert('Not enough coins. You need '+skin.cost+'.'); return; }
+    profile.coins -= skin.cost;
+    profile.ownedCardBacks.push(id);
+    sfxCoin();
+  }
+  equipCardBack(id);
+}
+function equipCardBack(id){
+  profile.equippedCardBack = id;
+  saveProfile();
+  applyCardBackSkin();
+  refreshTopbar();
+  renderBacksShop();
+}
+function applyCardBackSkin(){
+  const skin = CARD_BACK_SKINS.find(s=>s.id===profile.equippedCardBack) || CARD_BACK_SKINS[0];
+  document.querySelectorAll('.card-back img').forEach(img=>{ img.style.filter = skin.filter; });
+}
+
+function renderFramesShop(){
+  const list = document.getElementById('frames-shop-list');
+  list.innerHTML = '';
+  FRAME_STYLES.forEach(s=>{
+    const owned = profile.ownedFrames.includes(s.id);
+    const equipped = profile.equippedFrame===s.id;
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+    const swatch = '<div class="shop-item-swatch '+s.cls+'" style="border:3px solid; display:flex;align-items:center;justify-content:center;font-family:Anton,sans-serif;color:var(--gold);">'+profile.name.charAt(0).toUpperCase()+'</div>';
+    let btn;
+    if(equipped) btn = '<button class="shop-item-btn equipped" disabled>✓ Equipped</button>';
+    else if(owned) btn = '<button class="shop-item-btn equip" onclick="equipFrame(\''+s.id+'\')">Equip</button>';
+    else btn = '<button class="shop-item-btn buy" onclick="buyFrame(\''+s.id+'\')">💎 '+s.cost+'</button>';
+    div.innerHTML = swatch + '<div class="shop-item-text"><div class="shop-item-title">'+s.name+'</div><div class="shop-item-cost">'+(s.cost===0?'Included':'💎 '+s.cost+' gems')+'</div></div>' + btn;
+    list.appendChild(div);
+  });
+}
+function buyFrame(id){
+  const frame = FRAME_STYLES.find(s=>s.id===id);
+  if(!profile.ownedFrames.includes(id)){
+    if(profile.gems < frame.cost){ sfxLose(); alert('Not enough gems. You need '+frame.cost+'.'); return; }
+    profile.gems -= frame.cost;
+    profile.ownedFrames.push(id);
+    sfxCoin();
+  }
+  equipFrame(id);
+}
+function equipFrame(id){
+  profile.equippedFrame = id;
+  saveProfile();
+  applyFrame();
+  refreshTopbar();
+  renderFramesShop();
+}
+function applyFrame(){
+  const frame = FRAME_STYLES.find(s=>s.id===profile.equippedFrame) || FRAME_STYLES[0];
+  ['tb-avatar','profile-avatar'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    FRAME_STYLES.forEach(s=> el.classList.remove(s.cls));
+    el.classList.add(frame.cls);
+  });
 }
 
 /* ---------------- SCREEN NAV ---------------- */
@@ -694,7 +932,8 @@ function showScreen(id){
   if(id==='collection') renderCollection();
   if(id==='profile') refreshProfileScreen();
   if(id==='achievements') renderAchievements();
-  if(id==='settings') renderAudioUI();
+  if(id==='shop') setShopTab('foils');
+  if(id==='settings'){ renderAudioUI(); renderPlaylistUI(); }
 }
 
 let pendingMode = 'ai';
@@ -747,8 +986,8 @@ function fillCardFace(prefix, card){
 }
 
 function renderRound(){
-  document.getElementById('card-p1').classList.remove('flipped');
-  document.getElementById('card-p2').classList.remove('flipped');
+  document.getElementById('card-p1').classList.add('flipped'); // your card is always visible
+  document.getElementById('card-p2').classList.remove('flipped'); // rival/opponent stays hidden until reveal
   document.getElementById('result-banner').textContent = '\u00A0';
   document.getElementById('result-banner').className = 'result-banner';
 
@@ -763,12 +1002,14 @@ function renderRound(){
   const c2 = state.p2Deck[0];
   fillCardFace('p1', c1);
   fillCardFace('p2', c2);
+  document.getElementById('card-p1').classList.add('flipped');
+  applyCardBackSkin();
 
   const callerIsP1 = state.turn === 1;
   document.getElementById('turn-pill').textContent = callerIsP1 ? "YOU CALL IT" : (state.mode==='ai' ? "RIVAL IS THINKING…" : "P2 CALLS IT");
-  document.getElementById('picker-label').textContent = callerIsP1 ? "Choose a category from your card" : (state.mode==='ai' ? "Rival is choosing…" : "Player 2 — hide the screen, then choose");
+  document.getElementById('picker-label').textContent = callerIsP1 ? "Choose a category from your card" : (state.mode==='ai' ? "Rival is choosing…" : "Player 2 — use your card's numbers below to choose");
 
-  renderCatGrid(callerIsP1, c1);
+  renderCatGrid(callerIsP1, callerIsP1 ? c1 : c2);
 
   if(!callerIsP1 && state.mode==='ai'){ setTimeout(()=> aiPick(c2), 1800); }
 }
@@ -788,11 +1029,16 @@ function renderCatGrid(interactive, refCard){
 
 /* ---------------- GAME LOGIC ---------------- */
 function aiPick(aiCard){
+  // Compare this card's percentile rank (vs the whole 52-card deck) across every
+  // category on equal footing, so the AI picks whatever it's genuinely strongest
+  // in — not just whichever stat happens to have the biggest raw numbers.
   let best=null, bestScore=-Infinity;
   CATEGORIES.forEach(cat=>{
     const val = cat.getVal(aiCard);
-    const score = cat.lowerWins ? -val : val;
-    const norm = score / (cat.key==='rank' ? 1 : (cat.key==='weight' || cat.key==='matches' ? 10 : 1));
+    const { min, max } = CATEGORY_STATS[cat.key];
+    const range = (max - min) || 1;
+    let norm = cat.lowerWins ? (max - val) / range : (val - min) / range; // 0..1, higher = better for AI
+    norm += (Math.random() - 0.5) * 0.06; // small jitter so it isn't robotically predictable
     if(norm > bestScore){ bestScore = norm; best = cat.key; }
   });
   playCategory(best);
@@ -939,9 +1185,8 @@ function endGame(){
   refreshTopbar();
 }
 
-/* ---------------- 3D VIEWER ---------------- */
-let threeLoaded = false, threeLoading = false;
-let viewer3d = { renderer:null, scene:null, camera:null, mesh:null, raf:null, dragging:false, lastX:0, lastY:0, rotY:0.4, rotX:0.15, dist:3.2 };
+/* ---------------- 3D VIEWER (reusable, GLTF + vertex colors) ---------------- */
+let threeLoaded = false;
 
 function loadScriptOnce(src){
   return new Promise((resolve, reject)=>{
@@ -958,10 +1203,91 @@ function loadScriptOnce(src){
 async function ensureThree(){
   if(threeLoaded) return;
   await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js');
-  await loadScriptOnce('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js');
+  await loadScriptOnce('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js');
   threeLoaded = true;
 }
 
+// Creates a self-contained spinning viewer inside `container`. Returns {dispose}.
+function createSpinningViewer(container, modelUrl, opts){
+  opts = opts || {};
+  const w = container.clientWidth || 300, h = container.clientHeight || 300;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, w/h, 0.1, 100);
+  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+  renderer.setSize(w, h);
+  container.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0x8899aa, 0.85));
+  const key = new THREE.DirectionalLight(0xfff2d0, 1.05); key.position.set(3,5,4); scene.add(key);
+  const rim = new THREE.DirectionalLight(0x5fd0e8, 0.45); rim.position.set(-4,-2,-3); scene.add(rim);
+
+  const st = {
+    renderer, scene, camera, mesh:null, raf:null,
+    dragging:false, lastX:0, lastY:0,
+    rotY: opts.startRotY!=null?opts.startRotY:0.4,
+    rotX: opts.startRotX!=null?opts.startRotX:0.12,
+    dist: opts.dist||3.1,
+    autoRotate: opts.autoRotate!==false,
+    autoSpeed: opts.autoSpeed||0.006
+  };
+
+  const loader = new THREE.GLTFLoader();
+  loader.load(modelUrl, (gltf)=>{
+    const obj = gltf.scene;
+    obj.traverse(child=>{
+      if(child.isMesh){
+        child.material = new THREE.MeshStandardMaterial({ vertexColors:true, metalness:0.12, roughness:0.75 });
+      }
+    });
+    scene.add(obj);
+    st.mesh = obj;
+    if(opts.onLoaded) opts.onLoaded();
+    animate();
+  }, undefined, (err)=>{ if(opts.onError) opts.onError(err); });
+
+  function animate(){
+    if(!st.renderer || !st.mesh) return;
+    if(st.autoRotate && !st.dragging) st.rotY += st.autoSpeed;
+    const cx = Math.sin(st.rotY) * st.dist * Math.cos(st.rotX);
+    const cz = Math.cos(st.rotY) * st.dist * Math.cos(st.rotX);
+    const cy = Math.sin(st.rotX) * st.dist;
+    st.camera.position.set(cx, cy + 0.22, cz);
+    st.camera.lookAt(0, 0.05, 0);
+    st.renderer.render(st.scene, st.camera);
+    st.raf = requestAnimationFrame(animate);
+  }
+
+  if(opts.interactive!==false){
+    const onDown=(x,y)=>{ st.dragging=true; st.lastX=x; st.lastY=y; };
+    const onMove=(x,y)=>{
+      if(!st.dragging) return;
+      const dx=x-st.lastX, dy=y-st.lastY;
+      st.rotY += dx*0.008;
+      st.rotX = Math.max(-0.8, Math.min(0.8, st.rotX + dy*0.006));
+      st.lastX=x; st.lastY=y;
+    };
+    const onUp=()=>{ st.dragging=false; };
+    container.addEventListener('pointerdown', e=>{ onDown(e.clientX,e.clientY); container.setPointerCapture(e.pointerId); });
+    container.addEventListener('pointermove', e=> onMove(e.clientX,e.clientY));
+    container.addEventListener('pointerup', onUp);
+    container.addEventListener('pointercancel', onUp);
+    container.addEventListener('wheel', e=>{
+      e.preventDefault();
+      st.dist = Math.max(1.6, Math.min(6, st.dist + e.deltaY*0.002));
+    }, { passive:false });
+  }
+
+  function dispose(){
+    if(st.raf) cancelAnimationFrame(st.raf);
+    if(st.renderer){ st.renderer.dispose(); container.innerHTML=''; }
+    st.renderer=null; st.scene=null; st.mesh=null;
+  }
+  return { dispose };
+}
+
+// --- Collection modal viewer ---
+let activeModalViewer = null;
 function open3DViewer(){
   const card = currentModalCard;
   if(!card || !card.model) return;
@@ -972,97 +1298,32 @@ function open3DViewer(){
   document.getElementById('viewer3d-modal').classList.add('show');
 
   ensureThree().then(()=>{
-    initViewer3D(card.model);
+    const wrap = document.getElementById('viewer3d-canvas-wrap');
+    wrap.innerHTML = '';
+    activeModalViewer = createSpinningViewer(wrap, card.model, {
+      interactive: true, autoRotate: true,
+      onLoaded: ()=> document.getElementById('viewer3d-status').style.display='none',
+      onError: ()=> document.getElementById('viewer3d-status').textContent = "Couldn't load the model file."
+    });
   }).catch(()=>{
     document.getElementById('viewer3d-status').textContent = "Couldn't load the 3D viewer — check your internet connection.";
   });
 }
-
 function close3DViewer(){
   document.getElementById('viewer3d-modal').classList.remove('show');
-  if(viewer3d.raf) cancelAnimationFrame(viewer3d.raf);
-  if(viewer3d.renderer){
-    viewer3d.renderer.dispose();
-    const wrap = document.getElementById('viewer3d-canvas-wrap');
-    wrap.innerHTML = '';
-  }
-  viewer3d.renderer = null; viewer3d.scene = null; viewer3d.mesh = null;
+  if(activeModalViewer){ activeModalViewer.dispose(); activeModalViewer = null; }
 }
 
-function initViewer3D(modelUrl){
-  const wrap = document.getElementById('viewer3d-canvas-wrap');
-  wrap.innerHTML = '';
-  const w = wrap.clientWidth || 300, h = wrap.clientHeight || 300;
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(38, w/h, 0.1, 100);
-  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
-  renderer.setSize(w, h);
-  wrap.appendChild(renderer.domElement);
-
-  const ambient = new THREE.AmbientLight(0x8899aa, 0.7);
-  scene.add(ambient);
-  const key = new THREE.DirectionalLight(0xfff2d0, 1.1);
-  key.position.set(3,5,4);
-  scene.add(key);
-  const rim = new THREE.DirectionalLight(0x5fd0e8, 0.6);
-  rim.position.set(-4,-2,-3);
-  scene.add(rim);
-
-  viewer3d.scene = scene; viewer3d.camera = camera; viewer3d.renderer = renderer;
-  viewer3d.rotY = 0.4; viewer3d.rotX = 0.15; viewer3d.dist = 3.2;
-
-  const loader = new THREE.OBJLoader();
-  loader.load(modelUrl, (obj)=>{
-    obj.traverse(child=>{
-      if(child.isMesh){
-        child.geometry.computeVertexNormals();
-        child.material = new THREE.MeshStandardMaterial({ color:0x3f9d63, metalness:0.45, roughness:0.35, emissive:0x0a2015, emissiveIntensity:0.3 });
-      }
+// --- Main Menu hero viewer (decorative, auto-rotate only) ---
+let menuHeroViewer = null;
+function initMenuHero3D(){
+  const wrap = document.getElementById('menu3d-wrap');
+  if(!wrap) return;
+  ensureThree().then(()=>{
+    menuHeroViewer = createSpinningViewer(wrap, 'steel-viper.glb', {
+      interactive: true, autoRotate: true, autoSpeed: 0.005, dist: 3.4, startRotY: 0.6
     });
-    scene.add(obj);
-    viewer3d.mesh = obj;
-    document.getElementById('viewer3d-status').style.display = 'none';
-    animateViewer3D();
-  }, undefined, ()=>{
-    document.getElementById('viewer3d-status').textContent = "Couldn't load the model file.";
-  });
-
-  setupViewer3DControls(wrap);
-}
-
-function animateViewer3D(){
-  if(!viewer3d.renderer || !viewer3d.mesh) return;
-  if(!viewer3d.dragging) viewer3d.rotY += 0.006;
-  const cx = Math.sin(viewer3d.rotY) * viewer3d.dist * Math.cos(viewer3d.rotX);
-  const cz = Math.cos(viewer3d.rotY) * viewer3d.dist * Math.cos(viewer3d.rotX);
-  const cy = Math.sin(viewer3d.rotX) * viewer3d.dist;
-  viewer3d.camera.position.set(cx, cy + 0.3, cz);
-  viewer3d.camera.lookAt(0, 0.15, 0);
-  viewer3d.renderer.render(viewer3d.scene, viewer3d.camera);
-  viewer3d.raf = requestAnimationFrame(animateViewer3D);
-}
-
-function setupViewer3DControls(wrap){
-  const onDown = (x,y)=>{ viewer3d.dragging=true; viewer3d.lastX=x; viewer3d.lastY=y; };
-  const onMove = (x,y)=>{
-    if(!viewer3d.dragging) return;
-    const dx = x - viewer3d.lastX, dy = y - viewer3d.lastY;
-    viewer3d.rotY += dx * 0.008;
-    viewer3d.rotX = Math.max(-0.8, Math.min(0.8, viewer3d.rotX + dy * 0.006));
-    viewer3d.lastX = x; viewer3d.lastY = y;
-  };
-  const onUp = ()=>{ viewer3d.dragging=false; };
-
-  wrap.addEventListener('pointerdown', e=>{ onDown(e.clientX,e.clientY); wrap.setPointerCapture(e.pointerId); });
-  wrap.addEventListener('pointermove', e=> onMove(e.clientX,e.clientY));
-  wrap.addEventListener('pointerup', onUp);
-  wrap.addEventListener('pointercancel', onUp);
-  wrap.addEventListener('wheel', e=>{
-    e.preventDefault();
-    viewer3d.dist = Math.max(1.6, Math.min(6, viewer3d.dist + e.deltaY*0.002));
-  }, { passive:false });
+  }).catch(()=>{ /* silently fall back to the static hero photo */ });
 }
 
 /* ---------------- AUDIO ---------------- */
@@ -1142,13 +1403,100 @@ const MUSIC_PATTERN = [
   {f:110,d:0.35},{f:0,d:0.15},{f:130.8,d:0.35},{f:0,d:0.15},
   {f:98,d:0.35},{f:0,d:0.15},{f:110,d:0.35},{f:0,d:0.15}
 ];
+
+// --- Custom MP3 playlist (IndexedDB-persisted) ---
+let customPlaylist = []; // {name, url}
+let currentTrackIndex = -1;
+let musicAudioEl = null;
+
+function openMusicDB(){
+  return new Promise((resolve,reject)=>{
+    const req = indexedDB.open('rwa_music_db', 1);
+    req.onupgradeneeded = ()=> req.result.createObjectStore('tracks');
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+async function saveTracksToDB(files){
+  const db = await openMusicDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction('tracks','readwrite');
+    const store = tx.objectStore('tracks');
+    store.clear();
+    files.forEach(f=> store.put(f, f.name));
+    tx.oncomplete = ()=> resolve();
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+async function loadTracksFromDB(){
+  const db = await openMusicDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction('tracks','readonly');
+    const store = tx.objectStore('tracks');
+    const keysReq = store.getAllKeys(), valsReq = store.getAll();
+    let keys=null, vals=null;
+    keysReq.onsuccess = ()=>{ keys=keysReq.result; if(vals) resolve({keys,vals}); };
+    valsReq.onsuccess = ()=>{ vals=valsReq.result; if(keys) resolve({keys,vals}); };
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+async function initCustomPlaylist(){
+  try{
+    const {keys, vals} = await loadTracksFromDB();
+    customPlaylist = keys.map((k,i)=>({name:k, url:URL.createObjectURL(vals[i])}));
+  }catch(e){ customPlaylist = []; }
+  renderPlaylistUI();
+}
+function handleFolderPick(fileList){
+  const files = Array.from(fileList).filter(f=> f.type.startsWith('audio/') || /\.(mp3|wav|ogg|m4a|aac)$/i.test(f.name));
+  if(files.length===0){ alert('No audio files found in that folder.'); return; }
+  customPlaylist = files.map(f=>({name:f.name, url:URL.createObjectURL(f)}));
+  currentTrackIndex = -1;
+  saveTracksToDB(files).catch(()=>{});
+  renderPlaylistUI();
+  if(musicOn){ stopMusic(); startMusic(); }
+}
+function clearPlaylist(){
+  customPlaylist = [];
+  currentTrackIndex = -1;
+  saveTracksToDB([]).catch(()=>{});
+  renderPlaylistUI();
+  if(musicOn){ stopMusic(); startMusic(); }
+}
+function renderPlaylistUI(){
+  const el = document.getElementById('playlist-status');
+  const clearRow = document.getElementById('clear-playlist-row');
+  if(el) el.textContent = customPlaylist.length ? customPlaylist.length+' track(s) loaded — playing your music' : 'No custom tracks — using built-in music. Pick a folder of MP3s to use your own instead.';
+  if(clearRow) clearRow.style.display = customPlaylist.length ? 'flex' : 'none';
+}
+function startCustomPlayback(){
+  if(!musicAudioEl){
+    musicAudioEl = new Audio();
+    musicAudioEl.volume = 0.5;
+    musicAudioEl.addEventListener('ended', playNextTrack);
+  }
+  if(musicAudioEl.paused) playNextTrack();
+}
+function stopCustomPlayback(){ if(musicAudioEl) musicAudioEl.pause(); }
+function playNextTrack(){
+  if(customPlaylist.length===0) return;
+  currentTrackIndex++;
+  if(currentTrackIndex>=customPlaylist.length){ currentTrackIndex=0; customPlaylist = shuffle(customPlaylist); }
+  musicAudioEl.src = customPlaylist[currentTrackIndex].url;
+  musicAudioEl.play().catch(()=>{});
+}
+
 function startMusic(){
   if(!musicOn) return;
+  if(customPlaylist.length>0){ startCustomPlayback(); return; }
   ensureAudio();
   if(musicTimer) return;
   scheduleMusicBar();
 }
-function stopMusic(){ if(musicTimer){ clearTimeout(musicTimer); musicTimer=null; } }
+function stopMusic(){
+  if(musicTimer){ clearTimeout(musicTimer); musicTimer=null; }
+  stopCustomPlayback();
+}
 function scheduleMusicBar(){
   if(!musicOn || !audioCtx){ musicTimer=null; return; }
   let t=0;
@@ -1183,6 +1531,10 @@ document.addEventListener('pointerdown', function firstGesture(){
 
 /* ---------------- INIT ---------------- */
 refreshTopbar();
+applyFrame();
+applyCardBackSkin();
+initMenuHero3D();
+initCustomPlaylist();
 </script>
 </body>
 </html>
