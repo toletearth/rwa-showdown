@@ -74,6 +74,11 @@ body.hide-topbar .topbar-app{ display:none; }
 .menu-hero-fade{ position:absolute; inset:0; background:linear-gradient(to bottom, rgba(11,12,15,0.1) 35%, var(--bg) 96%); }
 .menu3d-wrap{ position:absolute; inset:0; z-index:3; touch-action:none; }
 .menu3d-wrap canvas{ width:100% !important; height:100% !important; display:block; }
+/* Shift only the menu render visually left; this does NOT change Steel Viper's 3D axis. */
+.menu-hero .menu3d-wrap canvas{
+  transform:translateX(-58px);
+}
+
 .menu3d-caption{ position:absolute; bottom:10px; left:0; right:0; text-align:center; z-index:4; font-size:10px; letter-spacing:2px; color:var(--gold); text-shadow:0 1px 4px rgba(0,0,0,0.8); opacity:0.85; }
 .menu-brand{ text-align:center; margin-top:-46px; position:relative; z-index:2; }
 .brand-big{ font-family:'Anton',sans-serif; font-size:58px; color:var(--gold); text-shadow:0 0 24px rgba(212,167,44,0.45); letter-spacing:2px; line-height:1; }
@@ -1260,9 +1265,7 @@ function createSpinningViewer(container, modelUrl, opts){
     dist: opts.dist||3.1,
     autoRotate: opts.autoRotate!==false,
     autoSpeed: opts.autoSpeed||0.006,
-    offsetX: opts.offsetX || 0,
-    offsetY: opts.offsetY || 0,
-    scale: opts.scale || 1
+    // Keep the original model transform/axis unchanged.
   };
 
   const loader = new THREE.GLTFLoader();
@@ -1273,10 +1276,7 @@ function createSpinningViewer(container, modelUrl, opts){
         child.material = new THREE.MeshStandardMaterial({ vertexColors:true, metalness:0.12, roughness:0.75 });
       }
     });
-    // Position/scale can be controlled independently for the menu hero.
-    obj.position.set(st.offsetX, st.offsetY, 0);
-    obj.scale.setScalar(st.scale);
-
+    // Keep the GLB at its original position, scale and axis.
     scene.add(obj);
     st.mesh = obj;
     if(opts.onLoaded) opts.onLoaded();
@@ -1362,13 +1362,7 @@ function initMenuHero3D(){
       autoRotate: true,
       autoSpeed: 0.005,
       dist: 3.4,
-      startRotY: 0.6,
-
-      // Move Steel Viper into the left side of the hero,
-      // where the "STEEL VIPER" title sits in the background.
-      offsetX: -0.72,
-      offsetY: -0.02,
-      scale: 1.08
+      startRotY: 0.6
     });
   }).catch(()=>{ /* silently fall back to the static hero photo */ });
 }
