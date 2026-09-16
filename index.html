@@ -494,6 +494,7 @@ body.hide-topbar .topbar-app{ display:none; }
           <div class="card-face card-back"><img src="card-back.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
           <div class="card-face card-front">
             <img id="p1-img" src="" alt="">
+            <div class="foil-overlay" id="p1-foil" style="display:none;"></div>
             <div class="stat-highlight" id="p1-highlight"></div>
           </div>
         </div>
@@ -505,6 +506,7 @@ body.hide-topbar .topbar-app{ display:none; }
           <div class="card-face card-back"><img src="card-back.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"></div>
           <div class="card-face card-front">
             <img id="p2-img" src="" alt="">
+            <div class="foil-overlay" id="p2-foil" style="display:none;"></div>
             <div class="stat-highlight" id="p2-highlight"></div>
           </div>
         </div>
@@ -983,6 +985,8 @@ function fillCardFace(prefix, card){
   document.getElementById(prefix+'-img').src = card.img;
   const hl = document.getElementById(prefix+'-highlight');
   hl.className = 'stat-highlight';
+  const foil = document.getElementById(prefix+'-foil');
+  if(foil) foil.style.display = profile.ownedFoils.includes(card.rank) ? 'block' : 'none';
 }
 
 function renderRound(){
