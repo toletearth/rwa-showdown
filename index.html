@@ -39,7 +39,8 @@ body{
 .topbar-app{ display:flex; align-items:center; justify-content:space-between; padding:8px 2px 14px; }
 body.hide-topbar .topbar-app{ display:none; }
 .tb-left{ display:flex; align-items:center; gap:10px; cursor:pointer; }
-.tb-avatar{ width:38px;height:38px;border-radius:50%; background:var(--bg2); border:2px solid var(--gold); display:flex;align-items:center;justify-content:center; font-family:'Anton',sans-serif; color:var(--gold); font-size:16px; flex-shrink:0; }
+.tb-avatar{ width:38px;height:38px;border-radius:50%; background:var(--bg2); border:2px solid var(--gold); display:flex;align-items:center;justify-content:center; font-family:'Anton',sans-serif; color:var(--gold); font-size:16px; flex-shrink:0; overflow:hidden; }
+.tb-avatar img{ width:100%; height:100%; object-fit:cover; border-radius:50%; }
 .tb-name{ font-size:13px; font-weight:700; color:var(--off); line-height:1.2; }
 .tb-rank{ font-size:10px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; }
 .tb-right{ display:flex; align-items:center; gap:8px; }
@@ -100,6 +101,14 @@ body.hide-topbar .topbar-app{ display:none; }
 .search-box{ width:100%; background:var(--bg2); border:1px solid var(--steel-line); border-radius:8px; padding:11px 14px; color:var(--off); font-size:13px; margin-bottom:14px; }
 .search-box::placeholder{ color:var(--dim); }
 .collection-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding-bottom:20px; }
+.avatar-shop-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding-bottom:20px; }
+.avatar-shop-item{ position:relative; text-align:center; }
+.avatar-shop-item img{ width:100%; aspect-ratio:1/1; border-radius:50%; object-fit:cover; border:3px solid var(--steel-line); display:block; }
+.avatar-shop-item.equipped img{ border-color:#6fe38a; }
+.avatar-shop-item.owned img{ border-color:var(--gold); cursor:pointer; }
+.avatar-shop-item .avatar-lock-badge{ position:absolute; top:0; right:8%; background:rgba(0,0,0,0.8); border-radius:50%; width:22px;height:22px; display:flex;align-items:center;justify-content:center; font-size:11px; }
+.avatar-shop-item .avatar-buy-btn{ margin-top:4px; width:100%; font-size:9.5px; font-weight:700; padding:4px 2px; border-radius:4px; border:none; background:var(--blood); color:#fff; cursor:pointer; }
+.avatar-shop-item .avatar-equipped-tag{ margin-top:4px; font-size:9.5px; color:#6fe38a; font-weight:700; }
 .collection-card{ background:var(--bg2); border:1px solid var(--steel-line); border-radius:8px; overflow:hidden; cursor:pointer; position:relative; }
 .collection-card img{ width:100%; aspect-ratio:2/3; object-fit:cover; object-position:top; display:block; }
 .cc-rank{ position:absolute; top:5px; left:5px; background:rgba(0,0,0,0.75); color:var(--gold); font-family:'Anton',sans-serif; font-size:10px; padding:2px 6px; border-radius:4px; }
@@ -121,7 +130,9 @@ body.hide-topbar .topbar-app{ display:none; }
 
 /* PROFILE */
 .profile-card{ text-align:center; background:var(--bg2); border:1px solid var(--steel-line); border-radius:10px; padding:24px 16px; margin-bottom:16px; }
-.profile-avatar{ width:72px;height:72px; border-radius:50%; background:var(--bg); border:3px solid var(--gold); display:flex; align-items:center; justify-content:center; font-family:'Anton',sans-serif; font-size:28px; color:var(--gold); margin:0 auto 10px; }
+.profile-avatar{ width:72px;height:72px; border-radius:50%; background:var(--bg); border:3px solid var(--gold); display:flex; align-items:center; justify-content:center; font-family:'Anton',sans-serif; font-size:28px; color:var(--gold); margin:0 auto 10px; overflow:hidden; cursor:pointer; }
+.profile-avatar img{ width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.profile-avatar-hint{ text-align:center; font-size:10px; color:var(--dim); margin:-6px 0 8px; letter-spacing:0.5px; }
 .profile-name{ font-family:'Anton',sans-serif; font-size:20px; }
 .profile-edit{ background:none;border:none; color:var(--dim); font-size:11px; text-decoration:underline; cursor:pointer; margin-top:4px; padding:4px; }
 .profile-rank{ display:inline-block; margin-top:10px; background:var(--blood); color:#fff; font-size:10px; padding:4px 12px; border-radius:20px; letter-spacing:1px; font-weight:700; }
@@ -274,7 +285,7 @@ body.hide-topbar .topbar-app{ display:none; }
 
   <div class="topbar-app" id="topbar-app">
     <div class="tb-left" onclick="showScreen('profile')">
-      <div class="tb-avatar" id="tb-avatar">P</div>
+      <div class="tb-avatar" id="tb-avatar"><img id="tb-avatar-img" src="" alt=""></div>
       <div>
         <div class="tb-name" id="tb-name">Player1</div>
         <div class="tb-rank" id="tb-rank">Rookie</div>
@@ -394,7 +405,8 @@ body.hide-topbar .topbar-app{ display:none; }
   <div class="screen" id="screen-profile">
     <div class="subheader"><button class="back-btn" onclick="showScreen('menu')">←</button><div class="subheader-title">👤 MY PROFILE</div></div>
     <div class="profile-card">
-      <div class="profile-avatar" id="profile-avatar">P</div>
+      <div class="profile-avatar" id="profile-avatar" onclick="showScreen('shop'); setShopTab('avatars');"><img id="profile-avatar-img" src="" alt=""></div>
+      <div class="profile-avatar-hint">tap to change</div>
       <div class="profile-name" id="profile-name-display">Player1</div>
       <button class="profile-edit" onclick="renamePlayer()">✎ rename</button>
       <div><span class="profile-rank" id="profile-rank">Rookie · Level 1</span></div>
@@ -429,6 +441,7 @@ body.hide-topbar .topbar-app{ display:none; }
       <button class="tab active" data-shoptab="foils" onclick="setShopTab('foils')">🎴 FOILS</button>
       <button class="tab" data-shoptab="backs" onclick="setShopTab('backs')">🂠 CARD BACKS</button>
       <button class="tab" data-shoptab="frames" onclick="setShopTab('frames')">🖼 FRAMES</button>
+      <button class="tab" data-shoptab="avatars" onclick="setShopTab('avatars')">👤 AVATARS</button>
     </div>
     <div class="shop-panel" id="shop-panel-foils">
       <div class="rules-strip" style="margin-bottom:12px;">Unlock a holographic foil version of any warrior for your collection. Purely cosmetic — battles always use the standard deck.</div>
@@ -442,6 +455,10 @@ body.hide-topbar .topbar-app{ display:none; }
     <div class="shop-panel" id="shop-panel-frames" style="display:none;">
       <div class="rules-strip" style="margin-bottom:12px;">A new ring around your avatar in the top bar and profile.</div>
       <div class="shop-list" id="frames-shop-list"></div>
+    </div>
+    <div class="shop-panel" id="shop-panel-avatars" style="display:none;">
+      <div class="rules-strip" style="margin-bottom:12px;">Pick your profile picture. One free male and one free female portrait to start — everyone else unlocks for 🪙 50 coins.</div>
+      <div class="avatar-shop-grid" id="avatars-shop-grid"></div>
     </div>
   </div>
 
@@ -630,7 +647,8 @@ function defaultProfile(){
     name:'Player1', coins:1250, gems:50, xp:0, gamesPlayed:0, gamesWon:0,
     ownedCardBacks:['gold'], equippedCardBack:'gold',
     ownedFrames:['classic'], equippedFrame:'classic',
-    ownedFoils:[]
+    ownedFoils:[],
+    ownedAvatars:['avatar-01','avatar-37'], equippedAvatar:'avatar-01'
   };
 }
 function ensureProfileShape(){
@@ -683,7 +701,7 @@ function rankTitle(level){
 
 function refreshTopbar(){
   const {level} = computeLevel(profile.xp);
-  document.getElementById('tb-avatar').textContent = profile.name.charAt(0).toUpperCase();
+  document.getElementById('tb-avatar-img').src = profile.equippedAvatar + '.jpg';
   document.getElementById('tb-name').textContent = profile.name;
   document.getElementById('tb-rank').textContent = rankTitle(level);
   document.getElementById('tb-coins').textContent = profile.coins;
@@ -693,7 +711,7 @@ function refreshTopbar(){
 
 function refreshProfileScreen(){
   const {level, into} = computeLevel(profile.xp);
-  document.getElementById('profile-avatar').textContent = profile.name.charAt(0).toUpperCase();
+  document.getElementById('profile-avatar-img').src = profile.equippedAvatar + '.jpg';
   document.getElementById('profile-name-display').textContent = profile.name;
   document.getElementById('profile-rank').textContent = rankTitle(level) + ' · Level ' + level;
   document.getElementById('xp-fill').style.width = (into/200*100) + '%';
@@ -804,15 +822,19 @@ const FRAME_STYLES = [
   { id:'royal', name:'Royal (animated)', cost:300, cls:'frame-royal' }
 ];
 const FOIL_COST = 100;
+const AVATAR_COST = 50;
+const AVATAR_IDS = Array.from({length:60}, (_,i)=> 'avatar-' + String(i+1).padStart(2,'0'));
+const FREE_AVATARS = ['avatar-01','avatar-37'];
 
 function setShopTab(tab){
   document.querySelectorAll('#screen-shop .tab').forEach(t=> t.classList.toggle('active', t.dataset.shoptab===tab));
-  ['foils','backs','frames'].forEach(t=>{
+  ['foils','backs','frames','avatars'].forEach(t=>{
     document.getElementById('shop-panel-'+t).style.display = (t===tab) ? 'block' : 'none';
   });
   if(tab==='foils') renderFoilShop();
   if(tab==='backs') renderBacksShop();
   if(tab==='frames') renderFramesShop();
+  if(tab==='avatars') renderAvatarShop();
 }
 
 function renderFoilShop(){
@@ -888,7 +910,7 @@ function renderFramesShop(){
     const equipped = profile.equippedFrame===s.id;
     const div = document.createElement('div');
     div.className = 'shop-item';
-    const swatch = '<div class="shop-item-swatch '+s.cls+'" style="border:3px solid; display:flex;align-items:center;justify-content:center;font-family:Anton,sans-serif;color:var(--gold);">'+profile.name.charAt(0).toUpperCase()+'</div>';
+    const swatch = '<div class="shop-item-swatch '+s.cls+'" style="border:3px solid; overflow:hidden;"><img src="'+profile.equippedAvatar+'.jpg" style="width:100%;height:100%;object-fit:cover;"></div>';
     let btn;
     if(equipped) btn = '<button class="shop-item-btn equipped" disabled>✓ Equipped</button>';
     else if(owned) btn = '<button class="shop-item-btn equip" onclick="equipFrame(\''+s.id+'\')">Equip</button>';
@@ -922,6 +944,39 @@ function applyFrame(){
     FRAME_STYLES.forEach(s=> el.classList.remove(s.cls));
     el.classList.add(frame.cls);
   });
+}
+
+function renderAvatarShop(){
+  const grid = document.getElementById('avatars-shop-grid');
+  grid.innerHTML = '';
+  AVATAR_IDS.forEach(id=>{
+    const owned = profile.ownedAvatars.includes(id);
+    const equipped = profile.equippedAvatar===id;
+    const div = document.createElement('div');
+    div.className = 'avatar-shop-item' + (equipped?' equipped':(owned?' owned':''));
+    let footer;
+    if(equipped) footer = '<div class="avatar-equipped-tag">✓ Active</div>';
+    else if(owned) footer = '<button class="avatar-buy-btn" style="background:var(--bg2);border:1px solid var(--steel-line);" onclick="equipAvatar(\''+id+'\')">Equip</button>';
+    else footer = '<button class="avatar-buy-btn" onclick="buyAvatar(\''+id+'\')">🪙 '+AVATAR_COST+'</button>';
+    div.innerHTML = '<img src="'+id+'.jpg" loading="lazy" alt="">' + footer;
+    grid.appendChild(div);
+  });
+}
+function buyAvatar(id){
+  if(!profile.ownedAvatars.includes(id)){
+    if(profile.coins < AVATAR_COST){ sfxLose(); alert('Not enough coins. You need '+AVATAR_COST+'.'); return; }
+    profile.coins -= AVATAR_COST;
+    profile.ownedAvatars.push(id);
+    sfxCoin();
+  }
+  equipAvatar(id);
+}
+function equipAvatar(id){
+  profile.equippedAvatar = id;
+  saveProfile();
+  refreshTopbar();
+  refreshProfileScreen();
+  renderAvatarShop();
 }
 
 /* ---------------- SCREEN NAV ---------------- */
