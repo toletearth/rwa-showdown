@@ -185,7 +185,17 @@ body.hide-topbar .topbar-app{ display:none; }
   font-size:9.5px; font-weight:700; letter-spacing:0.3px; text-align:center; padding:5px 2px; border:none; cursor:pointer;
 }
 .foil-owned-badge{ position:absolute; top:5px; right:5px; background:rgba(0,0,0,0.7); border-radius:4px; padding:2px 5px; font-size:12px; }
-.silver-locked{ filter: grayscale(1) brightness(0.92) contrast(1.05); }
+/* Locked ("Silver") state: character art stays full color; a bronze frame overlay
+   covers just the border area, hinting at the gold that's underneath once unlocked. */
+.silver-frame{ position:absolute; inset:0; pointer-events:none; display:none; }
+.silver-frame.show{ display:block; }
+.silver-frame .sf-top, .silver-frame .sf-bottom{ position:absolute; left:0; right:0; height:8%; background:linear-gradient(rgba(70,58,46,0.82),rgba(70,58,46,0.82)); }
+.silver-frame .sf-top{ top:0; }
+.silver-frame .sf-bottom{ bottom:0; }
+.silver-frame .sf-left, .silver-frame .sf-right{ position:absolute; top:0; bottom:0; width:7%; background:rgba(70,58,46,0.82); }
+.silver-frame .sf-left{ left:0; }
+.silver-frame .sf-right{ right:0; }
+.silver-frame .sf-tag{ position:absolute; top:9%; left:0; right:0; text-align:center; font-family:'Anton',sans-serif; font-size:11px; letter-spacing:2px; color:#cfd6dd; text-shadow:0 1px 3px rgba(0,0,0,0.8); }
 .silver-badge{ position:absolute; bottom:5px; left:5px; background:rgba(0,0,0,0.75); color:#c9d1d9; font-size:8.5px; font-weight:700; letter-spacing:0.3px; padding:2px 5px; border-radius:4px; }
 .foil-overlay{
   position:absolute; inset:0; pointer-events:none;
@@ -219,7 +229,8 @@ body.hide-topbar .topbar-app{ display:none; }
 .arena-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
 .arena-side{ display:flex; align-items:center; gap:8px; }
 .arena-side.right{ flex-direction:row-reverse; }
-.arena-avatar{ width:34px;height:34px;border-radius:50%; background:var(--bg2); border:2px solid var(--steel-line); display:flex;align-items:center;justify-content:center; font-size:15px; flex-shrink:0; }
+.arena-avatar{ width:34px;height:34px;border-radius:50%; background:var(--bg2); border:2px solid var(--steel-line); display:flex;align-items:center;justify-content:center; font-size:15px; flex-shrink:0; overflow:hidden; }
+.arena-avatar img{ width:100%; height:100%; object-fit:cover; border-radius:50%; }
 .arena-avatar.you{ border-color:var(--ice); }
 .arena-avatar.rival{ border-color:var(--blood); }
 .arena-side-text{ font-size:11px; line-height:1.3; }
@@ -403,6 +414,7 @@ body.hide-topbar .topbar-app{ display:none; }
       <button class="card-modal-close" onclick="document.getElementById('card-modal').classList.remove('show')">✕</button>
       <img id="card-modal-img" src="" alt="">
       <div class="foil-overlay" id="card-modal-foil" style="display:none;"></div>
+      <div class="silver-frame" id="card-modal-silverframe"><div class="sf-top"></div><div class="sf-bottom"></div><div class="sf-left"></div><div class="sf-right"></div><div class="sf-tag">🔒 SILVER</div></div>
       <button class="btn view3d-btn" id="view3d-btn" style="display:none;" onclick="open3DViewer()">🔄 View in 3D</button>
     </div>
   </div>
@@ -520,7 +532,7 @@ body.hide-topbar .topbar-app{ display:none; }
   <div class="screen" id="screen-arena">
     <div class="arena-header">
       <div class="arena-side">
-        <div class="arena-avatar you">🙂</div>
+        <div class="arena-avatar you" id="arena-p1-avatar"><img id="arena-p1-avatar-img" src="" alt=""></div>
         <div class="arena-side-text"><div class="n" id="arena-p1-name">Player1</div><div class="c" id="arena-p1-count">26 Cards</div></div>
       </div>
       <div class="arena-crest">RWA</div>
@@ -540,6 +552,7 @@ body.hide-topbar .topbar-app{ display:none; }
           <div class="card-face card-front">
             <img id="p1-img" src="" alt="">
             <div class="foil-overlay" id="p1-foil" style="display:none;"></div>
+            <div class="silver-frame" id="p1-silverframe"><div class="sf-top"></div><div class="sf-bottom"></div><div class="sf-left"></div><div class="sf-right"></div><div class="sf-tag">🔒 SILVER</div></div>
             <div class="stat-highlight" id="p1-highlight"></div>
           </div>
         </div>
@@ -552,6 +565,7 @@ body.hide-topbar .topbar-app{ display:none; }
           <div class="card-face card-front">
             <img id="p2-img" src="" alt="">
             <div class="foil-overlay" id="p2-foil" style="display:none;"></div>
+            <div class="silver-frame" id="p2-silverframe"><div class="sf-top"></div><div class="sf-bottom"></div><div class="sf-left"></div><div class="sf-right"></div><div class="sf-tag">🔒 SILVER</div></div>
             <div class="stat-highlight" id="p2-highlight"></div>
           </div>
         </div>
@@ -588,6 +602,10 @@ body.hide-topbar .topbar-app{ display:none; }
 
 <script>
 /* ---------------- DECK DATA ---------------- */
+function silverFrameHTML(){
+  return '<div class="silver-frame show"><div class="sf-top"></div><div class="sf-bottom"></div><div class="sf-left"></div><div class="sf-right"></div><div class="sf-tag">🔒 SILVER</div></div>';
+}
+
 const MASTER_DECK = [
   { name: "SHARP EDGE", img: "sharp-edge.jpg", rank: 1, heightIn: 84, heightLabel: "7'0\"", weight: 350, matchesLabel: "999+", matchesVal: 999, biceps: 26, chest: 60 },
   { name: "CRAZY", img: "crazy.jpg", rank: 2, heightIn: 76, heightLabel: "6'4\"", weight: 275, matchesLabel: "420+", matchesVal: 420, biceps: 22, chest: 50 },
@@ -674,7 +692,7 @@ function defaultProfile(){
   return {
     name:'Player1', coins:1250, gems:50, xp:0, gamesPlayed:0, gamesWon:0,
     ownedCardBacks:['gold'], equippedCardBack:'gold',
-    ownedFrames:['classic'], equippedFrame:'classic',
+    ownedFrames:['silver'], equippedFrame:'silver',
     ownedGolden:[],   // ranks unlocked from default Silver -> full-color Golden (500 coins)
     ownedColorful:[], // ranks with the holographic/colorful theme on top of Golden (50 gems)
     ownedAvatars:['avatar-01','avatar-37'], equippedAvatar:'avatar-01',
@@ -817,9 +835,9 @@ function renderCollection(){
     const colorful = profile.ownedColorful.includes(c.rank);
     div.className = 'collection-card' + (colorful ? ' foil-card' : '');
     div.onclick = ()=> openCardModal(c);
-    div.innerHTML = '<div class="cc-rank">#'+c.rank+'</div><img src="'+c.img+'" loading="lazy" alt="" class="'+(golden?'':'silver-locked')+'">'
+    div.innerHTML = '<div class="cc-rank">#'+c.rank+'</div><img src="'+c.img+'" loading="lazy" alt="">'
       + (colorful ? '<div class="foil-overlay"></div><div class="foil-owned-badge">✨</div>' : '')
-      + (!golden ? '<div class="silver-badge">🔒 SILVER</div>' : '')
+      + (!golden ? silverFrameHTML() : '')
       + '<div class="cc-name">'+c.name+'</div>';
     grid.appendChild(div);
   });
@@ -834,7 +852,7 @@ function openCardModal(c){
   const colorful = profile.ownedColorful.includes(c.rank);
   const img = document.getElementById('card-modal-img');
   img.src = c.img;
-  img.classList.toggle('silver-locked', !golden);
+  document.getElementById('card-modal-silverframe').classList.toggle('show', !golden);
   document.getElementById('view3d-btn').style.display = c.model ? 'block' : 'none';
   document.getElementById('card-modal-foil').style.display = colorful ? 'block' : 'none';
   document.getElementById('card-modal').classList.add('show');
@@ -850,8 +868,8 @@ const CARD_BACK_SKINS = [
   { id:'royal', name:'Royal Purple', cost:120, filter:'hue-rotate(250deg) saturate(1.4)' }
 ];
 const FRAME_STYLES = [
-  { id:'classic', name:'Classic Gold', cost:0, cls:'frame-classic' },
-  { id:'silver', name:'Silver', cost:150, cls:'frame-silver' },
+  { id:'silver', name:'Silver (Default)', cost:0, cls:'frame-silver' },
+  { id:'classic', name:'Gold', cost:150, cls:'frame-classic' },
   { id:'ice', name:'Ice', cost:150, cls:'frame-ice' },
   { id:'blood', name:'Blood', cost:150, cls:'frame-blood' },
   { id:'emerald', name:'Emerald', cost:200, cls:'frame-emerald' },
@@ -860,7 +878,8 @@ const FRAME_STYLES = [
 const GOLDEN_COST = 500;
 const COLORFUL_COST = 50; // gems
 const AVATAR_COST = 50;
-const AVATAR_IDS = Array.from({length:60}, (_,i)=> 'avatar-' + String(i+1).padStart(2,'0'));
+// Curated 16: 8 male (rows 1-3) + 8 female (rows 4-5), evenly spread for variety.
+const AVATAR_IDS = [1,6,11,16,21,26,31,36,37,40,43,46,49,52,55,58].map(n=> 'avatar-'+String(n).padStart(2,'0'));
 const FREE_AVATARS = ['avatar-01','avatar-37'];
 
 function setShopTab(tab){
@@ -887,8 +906,9 @@ function renderGoldenShop(){
     if(!golden) footer = '<button class="cc-unlock-btn" onclick="event.stopPropagation(); buyGolden('+c.rank+')">🪙 '+GOLDEN_COST+'</button>';
     else if(!colorful) footer = '<button class="cc-unlock-btn" style="color:var(--ice);" onclick="event.stopPropagation(); buyColorful('+c.rank+')">💎 '+COLORFUL_COST+'</button>';
     else footer = '<div class="cc-unlock-btn" style="color:#6fe38a;">✓ COMPLETE</div>';
-    div.innerHTML = '<div class="cc-rank">#'+c.rank+'</div><img src="'+c.img+'" loading="lazy" alt="" class="'+(golden?'':'silver-locked')+'">'
+    div.innerHTML = '<div class="cc-rank">#'+c.rank+'</div><img src="'+c.img+'" loading="lazy" alt="">'
       + (colorful ? '<div class="foil-overlay"></div><div class="foil-owned-badge">✨</div>' : '')
+      + (!golden ? silverFrameHTML() : '')
       + '<div class="cc-name">'+c.name+'</div>' + footer;
     grid.appendChild(div);
   });
@@ -1160,6 +1180,7 @@ function startGameWithLength(length){
   document.getElementById('arena-p2-avatar').textContent = mode==='ai' ? '🤖' : '🙂';
   document.getElementById('p2-label').textContent = mode==='ai' ? 'Rival Card' : "Player 2's Card";
   document.getElementById('arena-p1-name').textContent = profile.name;
+  document.getElementById('arena-p1-avatar-img').src = profile.equippedAvatar + '.jpg';
   state.mode = mode;
   startGame();
 }
@@ -1181,7 +1202,8 @@ function startGame(){
 function fillCardFace(prefix, card){
   const img = document.getElementById(prefix+'-img');
   img.src = card.img;
-  img.classList.toggle('silver-locked', !profile.ownedGolden.includes(card.rank));
+  const sf = document.getElementById(prefix+'-silverframe');
+  if(sf) sf.classList.toggle('show', !profile.ownedGolden.includes(card.rank));
   const hl = document.getElementById(prefix+'-highlight');
   hl.className = 'stat-highlight';
   const foil = document.getElementById(prefix+'-foil');
