@@ -128,6 +128,19 @@ body.hide-topbar .topbar-app{ display:none; }
 .viewer3d-status{ text-align:center; color:var(--dim); font-size:12px; margin-top:10px; }
 .viewer3d-hint{ text-align:center; color:var(--steel); font-size:10.5px; margin-top:4px; letter-spacing:0.5px; }
 
+/* DAILY REWARD */
+.daily-inner{ max-width:320px; width:100%; background:linear-gradient(180deg,var(--bg2),var(--bg)); border:1px solid var(--gold); border-radius:14px; padding:28px 20px; text-align:center; box-shadow:0 0 40px rgba(212,167,44,0.25); }
+.daily-streak-label{ font-family:'Anton',sans-serif; letter-spacing:2px; color:var(--gold); font-size:14px; margin-bottom:18px; }
+.daily-box{ cursor:pointer; padding:10px; }
+.daily-box-icon{ font-size:72px; animation: giftBounce 1.4s ease-in-out infinite; }
+@keyframes giftBounce{ 0%,100%{ transform:translateY(0) rotate(-3deg);} 50%{ transform:translateY(-8px) rotate(3deg);} }
+.daily-box-tap{ margin-top:10px; font-family:'Anton',sans-serif; font-size:13px; letter-spacing:1.5px; color:var(--off); }
+.daily-rewards{ display:flex; flex-direction:column; gap:10px; margin:6px 0 20px; }
+.daily-reward-row{ display:flex; align-items:center; gap:12px; background:var(--bg2); border:1px solid var(--steel-line); border-radius:8px; padding:10px 14px; text-align:left; }
+.daily-reward-row .dr-icon{ font-size:22px; width:28px; text-align:center; flex-shrink:0; }
+.daily-reward-row .dr-text{ font-size:13px; font-weight:700; }
+.daily-reward-row .dr-sub{ font-size:10.5px; color:var(--dim); }
+
 /* PROFILE */
 .profile-card{ text-align:center; background:var(--bg2); border:1px solid var(--steel-line); border-radius:10px; padding:24px 16px; margin-bottom:16px; }
 .profile-avatar{ width:72px;height:72px; border-radius:50%; background:var(--bg); border:3px solid var(--gold); display:flex; align-items:center; justify-content:center; font-family:'Anton',sans-serif; font-size:28px; color:var(--gold); margin:0 auto 10px; overflow:hidden; cursor:pointer; }
@@ -167,11 +180,13 @@ body.hide-topbar .topbar-app{ display:none; }
 .shop-item-btn.equipped{ background:#6fe38a; color:#0b0c0f; cursor:default; }
 
 .foil-card{ position:relative; }
-.foil-card .cc-unlock-btn{
+.cc-unlock-btn{
   position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.82); color:var(--gold);
   font-size:9.5px; font-weight:700; letter-spacing:0.3px; text-align:center; padding:5px 2px; border:none; cursor:pointer;
 }
 .foil-owned-badge{ position:absolute; top:5px; right:5px; background:rgba(0,0,0,0.7); border-radius:4px; padding:2px 5px; font-size:12px; }
+.silver-locked{ filter: grayscale(1) brightness(0.92) contrast(1.05); }
+.silver-badge{ position:absolute; bottom:5px; left:5px; background:rgba(0,0,0,0.75); color:#c9d1d9; font-size:8.5px; font-weight:700; letter-spacing:0.3px; padding:2px 5px; border-radius:4px; }
 .foil-overlay{
   position:absolute; inset:0; pointer-events:none;
   background: linear-gradient(115deg, transparent 15%, rgba(255,0,170,0.45) 30%, rgba(0,255,220,0.45) 45%, rgba(255,225,0,0.45) 60%, transparent 80%);
@@ -401,6 +416,19 @@ body.hide-topbar .topbar-app{ display:none; }
     </div>
   </div>
 
+  <!-- DAILY REWARD -->
+  <div class="card-modal" id="daily-modal">
+    <div class="daily-inner">
+      <div class="daily-streak-label" id="daily-streak-label">DAY 1 STREAK</div>
+      <div class="daily-box" id="daily-box" onclick="openDailyBox()">
+        <div class="daily-box-icon">🎁</div>
+        <div class="daily-box-tap">TAP TO OPEN</div>
+      </div>
+      <div class="daily-rewards" id="daily-rewards" style="display:none;"></div>
+      <button class="btn" id="daily-collect-btn" style="display:none;" onclick="closeDailyModal()">AWESOME!</button>
+    </div>
+  </div>
+
   <!-- PROFILE -->
   <div class="screen" id="screen-profile">
     <div class="subheader"><button class="back-btn" onclick="showScreen('menu')">←</button><div class="subheader-title">👤 MY PROFILE</div></div>
@@ -438,15 +466,15 @@ body.hide-topbar .topbar-app{ display:none; }
   <div class="screen" id="screen-shop">
     <div class="subheader"><button class="back-btn" onclick="showScreen('menu')">←</button><div class="subheader-title">🛒 SHOP</div></div>
     <div class="collection-tabs">
-      <button class="tab active" data-shoptab="foils" onclick="setShopTab('foils')">🎴 FOILS</button>
+      <button class="tab active" data-shoptab="golden" onclick="setShopTab('golden')">🥇 GOLDEN</button>
       <button class="tab" data-shoptab="backs" onclick="setShopTab('backs')">🂠 CARD BACKS</button>
       <button class="tab" data-shoptab="frames" onclick="setShopTab('frames')">🖼 FRAMES</button>
       <button class="tab" data-shoptab="avatars" onclick="setShopTab('avatars')">👤 AVATARS</button>
     </div>
-    <div class="shop-panel" id="shop-panel-foils">
-      <div class="rules-strip" style="margin-bottom:12px;">Unlock a holographic foil version of any warrior for your collection. Purely cosmetic — battles always use the standard deck.</div>
-      <input class="search-box" id="foil-search" placeholder="Search warrior..." oninput="renderFoilShop()">
-      <div class="collection-grid" id="foil-shop-grid"></div>
+    <div class="shop-panel" id="shop-panel-golden">
+      <div class="rules-strip" style="margin-bottom:12px;">Every warrior starts in Silver. Unlock its full-color <b>Golden</b> form for 🪙 500 coins, then add the shimmering <b>Colorful</b> theme on top for 💎 50 gems. Purely cosmetic — battles always use the standard deck.</div>
+      <input class="search-box" id="golden-search" placeholder="Search warrior..." oninput="renderGoldenShop()">
+      <div class="collection-grid" id="golden-shop-grid"></div>
     </div>
     <div class="shop-panel" id="shop-panel-backs" style="display:none;">
       <div class="rules-strip" style="margin-bottom:12px;">Recolor the card back shown during battles.</div>
@@ -647,8 +675,10 @@ function defaultProfile(){
     name:'Player1', coins:1250, gems:50, xp:0, gamesPlayed:0, gamesWon:0,
     ownedCardBacks:['gold'], equippedCardBack:'gold',
     ownedFrames:['classic'], equippedFrame:'classic',
-    ownedFoils:[],
-    ownedAvatars:['avatar-01','avatar-37'], equippedAvatar:'avatar-01'
+    ownedGolden:[],   // ranks unlocked from default Silver -> full-color Golden (500 coins)
+    ownedColorful:[], // ranks with the holographic/colorful theme on top of Golden (50 gems)
+    ownedAvatars:['avatar-01','avatar-37'], equippedAvatar:'avatar-01',
+    lastLoginDate:null, loginStreak:0, dailyPending:null
   };
 }
 function ensureProfileShape(){
@@ -783,11 +813,13 @@ function renderCollection(){
   }
   filtered.forEach(c=>{
     const div = document.createElement('div');
-    const owned = profile.ownedFoils.includes(c.rank);
-    div.className = 'collection-card' + (owned ? ' foil-card' : '');
+    const golden = profile.ownedGolden.includes(c.rank);
+    const colorful = profile.ownedColorful.includes(c.rank);
+    div.className = 'collection-card' + (colorful ? ' foil-card' : '');
     div.onclick = ()=> openCardModal(c);
-    div.innerHTML = '<div class="cc-rank">#'+c.rank+'</div><img src="'+c.img+'" loading="lazy" alt="">'
-      + (owned ? '<div class="foil-overlay"></div><div class="foil-owned-badge">✨</div>' : '')
+    div.innerHTML = '<div class="cc-rank">#'+c.rank+'</div><img src="'+c.img+'" loading="lazy" alt="" class="'+(golden?'':'silver-locked')+'">'
+      + (colorful ? '<div class="foil-overlay"></div><div class="foil-owned-badge">✨</div>' : '')
+      + (!golden ? '<div class="silver-badge">🔒 SILVER</div>' : '')
       + '<div class="cc-name">'+c.name+'</div>';
     grid.appendChild(div);
   });
@@ -798,9 +830,13 @@ function openCardModal(c){
   viewedCards.add(c.rank);
   saveViewed();
   if(viewedCards.size>=52) unlockAchievement('curator');
-  document.getElementById('card-modal-img').src = c.img;
+  const golden = profile.ownedGolden.includes(c.rank);
+  const colorful = profile.ownedColorful.includes(c.rank);
+  const img = document.getElementById('card-modal-img');
+  img.src = c.img;
+  img.classList.toggle('silver-locked', !golden);
   document.getElementById('view3d-btn').style.display = c.model ? 'block' : 'none';
-  document.getElementById('card-modal-foil').style.display = profile.ownedFoils.includes(c.rank) ? 'block' : 'none';
+  document.getElementById('card-modal-foil').style.display = colorful ? 'block' : 'none';
   document.getElementById('card-modal').classList.add('show');
 }
 
@@ -821,46 +857,62 @@ const FRAME_STYLES = [
   { id:'emerald', name:'Emerald', cost:200, cls:'frame-emerald' },
   { id:'royal', name:'Royal (animated)', cost:300, cls:'frame-royal' }
 ];
-const FOIL_COST = 100;
+const GOLDEN_COST = 500;
+const COLORFUL_COST = 50; // gems
 const AVATAR_COST = 50;
 const AVATAR_IDS = Array.from({length:60}, (_,i)=> 'avatar-' + String(i+1).padStart(2,'0'));
 const FREE_AVATARS = ['avatar-01','avatar-37'];
 
 function setShopTab(tab){
   document.querySelectorAll('#screen-shop .tab').forEach(t=> t.classList.toggle('active', t.dataset.shoptab===tab));
-  ['foils','backs','frames','avatars'].forEach(t=>{
+  ['golden','backs','frames','avatars'].forEach(t=>{
     document.getElementById('shop-panel-'+t).style.display = (t===tab) ? 'block' : 'none';
   });
-  if(tab==='foils') renderFoilShop();
+  if(tab==='golden') renderGoldenShop();
   if(tab==='backs') renderBacksShop();
   if(tab==='frames') renderFramesShop();
   if(tab==='avatars') renderAvatarShop();
 }
 
-function renderFoilShop(){
-  const grid = document.getElementById('foil-shop-grid');
-  const q = (document.getElementById('foil-search').value||'').trim().toLowerCase();
+function renderGoldenShop(){
+  const grid = document.getElementById('golden-shop-grid');
+  const q = (document.getElementById('golden-search').value||'').trim().toLowerCase();
   grid.innerHTML = '';
   MASTER_DECK.filter(c=> !q || c.name.toLowerCase().includes(q)).forEach(c=>{
-    const owned = profile.ownedFoils.includes(c.rank);
+    const golden = profile.ownedGolden.includes(c.rank);
+    const colorful = profile.ownedColorful.includes(c.rank);
     const div = document.createElement('div');
-    div.className = 'collection-card' + (owned ? ' foil-card' : '');
-    div.innerHTML = '<div class="cc-rank">#'+c.rank+'</div><img src="'+c.img+'" loading="lazy" alt="">'
-      + (owned ? '<div class="foil-overlay"></div><div class="foil-owned-badge">✨</div>' : '')
-      + '<div class="cc-name">'+c.name+'</div>'
-      + (owned ? '' : '<button class="cc-unlock-btn" onclick="event.stopPropagation(); buyFoil('+c.rank+')">🪙 '+FOIL_COST+'</button>');
+    div.className = 'collection-card' + (colorful ? ' foil-card' : '');
+    let footer;
+    if(!golden) footer = '<button class="cc-unlock-btn" onclick="event.stopPropagation(); buyGolden('+c.rank+')">🪙 '+GOLDEN_COST+'</button>';
+    else if(!colorful) footer = '<button class="cc-unlock-btn" style="color:var(--ice);" onclick="event.stopPropagation(); buyColorful('+c.rank+')">💎 '+COLORFUL_COST+'</button>';
+    else footer = '<div class="cc-unlock-btn" style="color:#6fe38a;">✓ COMPLETE</div>';
+    div.innerHTML = '<div class="cc-rank">#'+c.rank+'</div><img src="'+c.img+'" loading="lazy" alt="" class="'+(golden?'':'silver-locked')+'">'
+      + (colorful ? '<div class="foil-overlay"></div><div class="foil-owned-badge">✨</div>' : '')
+      + '<div class="cc-name">'+c.name+'</div>' + footer;
     grid.appendChild(div);
   });
 }
-function buyFoil(rank){
-  if(profile.ownedFoils.includes(rank)) return;
-  if(profile.coins < FOIL_COST){ sfxLose(); alert('Not enough coins. You need '+FOIL_COST+'.'); return; }
-  profile.coins -= FOIL_COST;
-  profile.ownedFoils.push(rank);
+function buyGolden(rank){
+  if(profile.ownedGolden.includes(rank)) return;
+  if(profile.coins < GOLDEN_COST){ sfxLose(); alert('Not enough coins. You need '+GOLDEN_COST+'.'); return; }
+  profile.coins -= GOLDEN_COST;
+  profile.ownedGolden.push(rank);
   saveProfile();
   sfxCoin();
   refreshTopbar();
-  renderFoilShop();
+  renderGoldenShop();
+}
+function buyColorful(rank){
+  if(profile.ownedColorful.includes(rank)) return;
+  if(!profile.ownedGolden.includes(rank)){ alert('Unlock the Golden form first.'); return; }
+  if(profile.gems < COLORFUL_COST){ sfxLose(); alert('Not enough gems. You need '+COLORFUL_COST+'.'); return; }
+  profile.gems -= COLORFUL_COST;
+  profile.ownedColorful.push(rank);
+  saveProfile();
+  sfxCoin();
+  refreshTopbar();
+  renderGoldenShop();
 }
 
 function renderBacksShop(){
@@ -979,6 +1031,96 @@ function equipAvatar(id){
   renderAvatarShop();
 }
 
+/* ---------------- DAILY LOGIN / STREAK ---------------- */
+function todayString(){
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function daysBetween(a, b){
+  return Math.round((new Date(b) - new Date(a)) / 86400000);
+}
+function randInt(min, max){ return Math.floor(Math.random()*(max-min+1)) + min; }
+
+function checkDailyLogin(){
+  const today = todayString();
+  if(profile.lastLoginDate === today){
+    // Already logged today — if a reward is still unclaimed from this session, show it again.
+    if(profile.dailyPending) showDailyModal();
+    return;
+  }
+  if(profile.lastLoginDate){
+    const gap = daysBetween(profile.lastLoginDate, today);
+    profile.loginStreak = (gap === 1) ? profile.loginStreak + 1 : 1;
+  } else {
+    profile.loginStreak = 1;
+  }
+  profile.lastLoginDate = today;
+
+  const coins = randInt(100,200);
+  const gems = randInt(2,5);
+  const unowned = MASTER_DECK.filter(c=> !profile.ownedGolden.includes(c.rank));
+  const goldenPick = unowned.length ? unowned[randInt(0,unowned.length-1)].rank : null;
+
+  let colorfulPick = null;
+  if(profile.loginStreak % 7 === 0){
+    const unownedColorful = MASTER_DECK.filter(c=> !profile.ownedColorful.includes(c.rank));
+    if(unownedColorful.length) colorfulPick = unownedColorful[randInt(0,unownedColorful.length-1)].rank;
+  }
+
+  profile.dailyPending = { coins, gems, goldenPick, colorfulPick, streak: profile.loginStreak };
+  saveProfile();
+  showDailyModal();
+}
+
+function showDailyModal(){
+  if(!profile.dailyPending) return;
+  document.getElementById('daily-streak-label').textContent = 'DAY ' + profile.dailyPending.streak + ' STREAK';
+  document.getElementById('daily-box').style.display = 'block';
+  document.getElementById('daily-rewards').style.display = 'none';
+  document.getElementById('daily-collect-btn').style.display = 'none';
+  document.getElementById('daily-modal').classList.add('show');
+}
+
+function openDailyBox(){
+  const r = profile.dailyPending;
+  if(!r) return;
+  sfxCoin();
+  profile.coins += r.coins;
+  profile.gems += r.gems;
+  let goldenCard = null;
+  if(r.goldenPick!=null && !profile.ownedGolden.includes(r.goldenPick)){
+    profile.ownedGolden.push(r.goldenPick);
+    goldenCard = MASTER_DECK.find(c=>c.rank===r.goldenPick);
+  }
+  let colorfulCard = null;
+  if(r.colorfulPick!=null && !profile.ownedColorful.includes(r.colorfulPick)){
+    profile.ownedColorful.push(r.colorfulPick);
+    colorfulCard = MASTER_DECK.find(c=>c.rank===r.colorfulPick);
+  }
+  profile.dailyPending = null;
+  saveProfile();
+  refreshTopbar();
+
+  const rewardsEl = document.getElementById('daily-rewards');
+  let html = '';
+  html += '<div class="daily-reward-row"><div class="dr-icon">🪙</div><div><div class="dr-text">+'+r.coins+' Coins</div></div></div>';
+  html += '<div class="daily-reward-row"><div class="dr-icon">💎</div><div><div class="dr-text">+'+r.gems+' Gems</div></div></div>';
+  if(goldenCard){
+    html += '<div class="daily-reward-row"><div class="dr-icon">🥇</div><div><div class="dr-text">'+goldenCard.name+'</div><div class="dr-sub">Golden form unlocked!</div></div></div>';
+  }
+  if(colorfulCard){
+    html += '<div class="daily-reward-row"><div class="dr-icon">✨</div><div><div class="dr-text">'+colorfulCard.name+'</div><div class="dr-sub">7-Day Streak Bonus — Colorful theme unlocked!</div></div></div>';
+  }
+  rewardsEl.innerHTML = html;
+
+  document.getElementById('daily-box').style.display = 'none';
+  rewardsEl.style.display = 'flex';
+  document.getElementById('daily-collect-btn').style.display = 'block';
+}
+function closeDailyModal(){
+  document.getElementById('daily-modal').classList.remove('show');
+}
+
 /* ---------------- SCREEN NAV ---------------- */
 function showScreen(id){
   if(id!=='result' && id!=='arena') sfxTap();
@@ -989,7 +1131,7 @@ function showScreen(id){
   if(id==='collection') renderCollection();
   if(id==='profile') refreshProfileScreen();
   if(id==='achievements') renderAchievements();
-  if(id==='shop') setShopTab('foils');
+  if(id==='shop') setShopTab('golden');
   if(id==='settings'){ renderAudioUI(); renderPlaylistUI(); }
 }
 
@@ -1037,11 +1179,13 @@ function startGame(){
 
 /* ---------------- RENDER ---------------- */
 function fillCardFace(prefix, card){
-  document.getElementById(prefix+'-img').src = card.img;
+  const img = document.getElementById(prefix+'-img');
+  img.src = card.img;
+  img.classList.toggle('silver-locked', !profile.ownedGolden.includes(card.rank));
   const hl = document.getElementById(prefix+'-highlight');
   hl.className = 'stat-highlight';
   const foil = document.getElementById(prefix+'-foil');
-  if(foil) foil.style.display = profile.ownedFoils.includes(card.rank) ? 'block' : 'none';
+  if(foil) foil.style.display = profile.ownedColorful.includes(card.rank) ? 'block' : 'none';
 }
 
 function renderRound(){
@@ -1638,6 +1782,7 @@ applyFrame();
 applyCardBackSkin();
 initMenuHero3D();
 initCustomPlaylist();
+checkDailyLogin();
 </script>
 </body>
 </html>
