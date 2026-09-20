@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <title>RWA SHOWDOWN</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b0c0f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RWA Showdown">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
 <style>
 @import url('https://fonts.cdnfonts.com/css/anton');
 @import url('https://fonts.cdnfonts.com/css/inter');
@@ -34,6 +42,23 @@ body{
     radial-gradient(circle at 85% 80%, rgba(95,208,232,0.06), transparent 40%);
 }
 .wrap{ position:relative; z-index:1; max-width:600px; margin:0 auto; padding: 12px 14px 40px; }
+
+/* SPLASH SCREEN */
+.splash-screen{
+  position:fixed; inset:0; z-index:9999;
+  background: radial-gradient(ellipse at 50% 30%, #1c1e24 0%, var(--bg) 70%);
+  display:flex; align-items:center; justify-content:center;
+  transition: opacity .5s ease, visibility .5s ease;
+}
+.splash-screen.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+.splash-inner{ text-align:center; padding:0 30px; width:100%; max-width:320px; }
+.splash-crest{ font-size:44px; margin-bottom:6px; animation: splashPulse 1.8s ease-in-out infinite; }
+@keyframes splashPulse{ 0%,100%{ transform:scale(1); opacity:0.9; } 50%{ transform:scale(1.08); opacity:1; } }
+.splash-title{ font-family:'Anton',sans-serif; font-size:52px; color:var(--gold); letter-spacing:2px; text-shadow:0 0 24px rgba(212,167,44,0.45); line-height:1; }
+.splash-sub{ font-size:12px; letter-spacing:4px; color:var(--off); margin-top:4px; }
+.splash-bar{ width:100%; height:6px; background:var(--bg2); border:1px solid var(--steel-line); border-radius:6px; overflow:hidden; margin-top:34px; }
+.splash-bar-fill{ height:100%; width:0%; background:linear-gradient(90deg,var(--gold),#f0d878); transition: width .3s ease; }
+.splash-tip{ margin-top:14px; font-size:11.5px; color:var(--dim); letter-spacing:0.5px; }
 
 /* TOP APP BAR */
 .topbar-app{ display:flex; align-items:center; justify-content:space-between; padding:8px 2px 14px; }
@@ -141,6 +166,14 @@ body.hide-topbar .topbar-app{ display:none; }
 .daily-reward-row .dr-text{ font-size:13px; font-weight:700; }
 .daily-reward-row .dr-sub{ font-size:10.5px; color:var(--dim); }
 
+/* TUTORIAL */
+.tut-icon{ font-size:52px; margin-bottom:10px; }
+.tut-title{ font-family:'Anton',sans-serif; font-size:19px; letter-spacing:0.5px; margin-bottom:10px; }
+.tut-text{ font-size:13px; color:var(--dim); line-height:1.6; margin-bottom:20px; min-height:60px; }
+.tut-dots{ display:flex; justify-content:center; gap:6px; margin-bottom:18px; }
+.tut-dots span{ width:7px; height:7px; border-radius:50%; background:var(--steel-line); transition: background .2s; }
+.tut-dots span.active{ background:var(--gold); }
+
 /* PROFILE */
 .profile-card{ text-align:center; background:var(--bg2); border:1px solid var(--steel-line); border-radius:10px; padding:24px 16px; margin-bottom:16px; }
 .profile-avatar{ width:72px;height:72px; border-radius:50%; background:var(--bg); border:3px solid var(--gold); display:flex; align-items:center; justify-content:center; font-family:'Anton',sans-serif; font-size:28px; color:var(--gold); margin:0 auto 10px; overflow:hidden; cursor:pointer; }
@@ -188,11 +221,11 @@ body.hide-topbar .topbar-app{ display:none; }
 /* Locked ("Silver") state: character art stays full color; a bronze frame overlay
    covers just the border area, hinting at the gold that's underneath once unlocked. */
 .silver-badge{ position:absolute; bottom:5px; left:5px; background:rgba(0,0,0,0.75); color:#c9d1d9; font-size:8.5px; font-weight:700; letter-spacing:0.3px; padding:2px 5px; border-radius:4px; }
-.silver-film{ position:absolute; inset:0; background:rgba(205,210,218,0.35); pointer-events:none; display:none; }
+.silver-film{ position:absolute; inset:0; background:rgba(205,210,218,0.15); pointer-events:none; display:none; }
 .silver-film.show{ display:block; }
 .foil-overlay{
   position:absolute; inset:0; pointer-events:none;
-  background: linear-gradient(115deg, transparent 15%, rgba(255,0,170,0.45) 30%, rgba(0,255,220,0.45) 45%, rgba(255,225,0,0.45) 60%, transparent 60%);
+  background: linear-gradient(115deg, transparent 15%, rgba(255,0,170,0.45) 30%, rgba(0,255,220,0.45) 45%, rgba(255,225,0,0.45) 60%, transparent 80%);
   background-size:250% 250%;
   mix-blend-mode: color-dodge;
   animation: foilShift 3.5s linear infinite;
@@ -300,6 +333,16 @@ body.hide-topbar .topbar-app{ display:none; }
 </head>
 <body>
 <div class="crowd-glow"></div>
+
+<div class="splash-screen" id="splash-screen">
+  <div class="splash-inner">
+    <div class="splash-crest">👑</div>
+    <div class="splash-title">RWA</div>
+    <div class="splash-sub">RING WARRIORS ALLIANCE</div>
+    <div class="splash-bar"><div class="splash-bar-fill" id="splash-bar-fill"></div></div>
+    <div class="splash-tip" id="splash-tip">Loading warriors…</div>
+  </div>
+</div>
 <div class="wrap">
 
   <div class="topbar-app" id="topbar-app">
@@ -369,6 +412,29 @@ body.hide-topbar .topbar-app{ display:none; }
   </div>
 
   <!-- MATCH LENGTH -->
+  <!-- DIFFICULTY (1 Player only) -->
+  <div class="screen" id="screen-difficulty">
+    <div class="subheader"><button class="back-btn" onclick="showScreen('mode')">←</button><div class="subheader-title">AI DIFFICULTY</div></div>
+    <div class="mode-list">
+      <div class="mode-row" onclick="selectDifficultyAndContinue('easy')">
+        <div class="mode-row-icon">🙂</div>
+        <div class="mode-row-text"><div class="mode-row-title">EASY</div><div class="mode-row-sub">AI picks mostly at random — great for learning</div></div>
+        <div class="mode-row-arrow">›</div>
+      </div>
+      <div class="mode-row" onclick="selectDifficultyAndContinue('normal')">
+        <div class="mode-row-icon">😐</div>
+        <div class="mode-row-text"><div class="mode-row-title">NORMAL</div><div class="mode-row-sub">AI plays its strongest stat, with some unpredictability</div></div>
+        <div class="mode-row-arrow">›</div>
+      </div>
+      <div class="mode-row" onclick="selectDifficultyAndContinue('hard')">
+        <div class="mode-row-icon">😈</div>
+        <div class="mode-row-text"><div class="mode-row-title">HARD</div><div class="mode-row-sub">AI always calls its best possible category</div></div>
+        <div class="mode-row-arrow">›</div>
+      </div>
+    </div>
+    <div class="footer-note">CHOOSE YOUR CHALLENGE.</div>
+  </div>
+
   <div class="screen" id="screen-length">
     <div class="subheader"><button class="back-btn" onclick="showScreen('mode')">←</button><div class="subheader-title">MATCH LENGTH</div></div>
     <div class="mode-list">
@@ -421,6 +487,18 @@ body.hide-topbar .topbar-app{ display:none; }
     </div>
   </div>
 
+  <!-- TUTORIAL -->
+  <div class="card-modal" id="tutorial-modal">
+    <div class="daily-inner">
+      <div class="tut-icon" id="tut-icon">👑</div>
+      <div class="tut-title" id="tut-title">Welcome to RWA Showdown!</div>
+      <div class="tut-text" id="tut-text">52 warriors. One deck. Every card has a chance.</div>
+      <div class="tut-dots" id="tut-dots"></div>
+      <button class="btn" id="tut-next-btn" onclick="tutorialNext()">NEXT</button>
+      <button class="btn ghost" onclick="tutorialSkip()">SKIP</button>
+    </div>
+  </div>
+
   <!-- DAILY REWARD -->
   <div class="card-modal" id="daily-modal">
     <div class="daily-inner">
@@ -456,6 +534,7 @@ body.hide-topbar .topbar-app{ display:none; }
       <div class="profile-list-item" onclick="showScreen('shop')"><span>🛒 Shop</span><span>›</span></div>
       <div class="profile-list-item" onclick="showScreen('achievements')"><span>🏆 Achievements</span><span id="profile-ach-count">0/10 ›</span></div>
       <div class="profile-list-item" onclick="showScreen('rules')"><span>📖 Game Rules</span><span>›</span></div>
+      <div class="profile-list-item" onclick="showScreen('progress-info')"><span>📊 How Progress Works</span><span>›</span></div>
       <div class="profile-list-item" onclick="showScreen('settings')"><span>⚙ Settings</span><span>›</span></div>
     </div>
     <div class="footer-note">COLLECT ★ BATTLE ★ BE A LEGEND</div>
@@ -503,6 +582,29 @@ body.hide-topbar .topbar-app{ display:none; }
     </div>
     <div class="rules-strip">
       <b>Categories:</b> Rank (lower is better), Height, Weight, Matches, Biceps, Chest &mdash; all others, higher wins.
+    </div>
+  </div>
+
+  <!-- PROGRESS INFO -->
+  <div class="screen" id="screen-progress-info">
+    <div class="subheader"><button class="back-btn" onclick="showScreen('menu')">←</button><div class="subheader-title">📊 HOW PROGRESS WORKS</div></div>
+    <div class="rules-strip">
+      <b>🪙 Coins</b> &mdash; earned from playing and winning matches, plus your daily login gift. Spend them on Golden card unlocks (500 each), avatars (50 each), or premium frames.
+    </div>
+    <div class="rules-strip">
+      <b>💎 Gems</b> &mdash; rarer, earned from match wins, daily gifts, and 7-day streak bonuses. Spend them on the Colorful holographic theme (50 each) or premium frames.
+    </div>
+    <div class="rules-strip">
+      <b>🔒 Silver → 🥇 Golden</b> &mdash; every warrior starts in Silver. Unlock its true full-color Golden form for 🪙 500. This is purely cosmetic &mdash; battles always use the standard deck no matter what's unlocked.
+    </div>
+    <div class="rules-strip">
+      <b>✨ Colorful Theme</b> &mdash; once a card is Golden, add a shimmering holographic finish for 💎 50. Shows off in your Collection and during battles.
+    </div>
+    <div class="rules-strip">
+      <b>🎁 Daily Login</b> &mdash; open the app each day for a free gift box: coins, gems, and a random Golden unlock. Keep your streak alive &mdash; every 7th consecutive day adds a bonus Colorful unlock too. Miss a day and the streak resets.
+    </div>
+    <div class="rules-strip">
+      <b>🏆 Achievements</b> &mdash; 19 to chase, covering wins, streaks, collecting, and more. Check Profile → Achievements for the full list.
     </div>
   </div>
 
@@ -650,7 +752,7 @@ const MASTER_DECK = [
   { name: "TIGER LILY", img: "tiger-lily.jpg", rank: 48, heightIn: 68, heightLabel: "5'8\"", weight: 132, matchesLabel: "88", matchesVal: 88, biceps: 13, chest: 34 },
   { name: "SCARLET", img: "scarlet.jpg", rank: 49, heightIn: 67, heightLabel: "5'7\"", weight: 135, matchesLabel: "120", matchesVal: 120, biceps: 12, chest: 34 },
   { name: "MOON CHILD", img: "moon-child.jpg", rank: 50, heightIn: 66, heightLabel: "5'6\"", weight: 128, matchesLabel: "110", matchesVal: 110, biceps: 12, chest: 32 },
-  { name: "DWARF BOY", img: "dwarf-boy.jpg", rank: 51, heightIn: 42, heightLabel: "3'6\"", weight: 110, matchesLabel: "75", matchesVal: 75, biceps: 15, chest: 32 },
+  { name: "DWARF BOY", img: "dwarf-boy.jpg", rank: 51, heightIn: 42, heightLabel: "3'6\"", weight: 68, matchesLabel: "75", matchesVal: 75, biceps: 11, chest: 28 },
   { name: "SOLDIER GIRL", img: "soldier-girl.jpg", rank: 52, heightIn: 66, heightLabel: "5'6\"", weight: 125, matchesLabel: "82", matchesVal: 82, biceps: 12, chest: 34 }
 ];
 
@@ -720,7 +822,16 @@ const ACHIEVEMENT_LIST = [
   { id:'heavy_hitter', icon:'⚖️', title:'Heavy Hitter', desc:'Win a round on Weight' },
   { id:'brains_over_brawn', icon:'👑', title:'Top Ranked', desc:'Win a round on Rank' },
   { id:'flawless', icon:'💎', title:'Flawless Victory', desc:'Win a match without losing a single round' },
-  { id:'curator', icon:'🎴', title:'Curator', desc:'View every card in your collection' }
+  { id:'curator', icon:'🎴', title:'Curator', desc:'View every card in your collection' },
+  { id:'gilded', icon:'🥇', title:'Golden Age', desc:'Unlock your first Golden card' },
+  { id:'gold_rush', icon:'🏅', title:'Gold Rush', desc:'Own 10 Golden cards' },
+  { id:'shimmer', icon:'✨', title:'Shine Bright', desc:'Unlock your first Colorful theme' },
+  { id:'streak_3', icon:'🔥', title:'On a Roll', desc:'Reach a 3-day login streak' },
+  { id:'streak_7', icon:'📅', title:'Weekly Warrior', desc:'Reach a 7-day login streak' },
+  { id:'new_look', icon:'🧑', title:'New Look', desc:'Equip a different avatar' },
+  { id:'fully_framed', icon:'🖼️', title:'Framed Up', desc:'Unlock 3 different avatar frames' },
+  { id:'blitz_winner', icon:'⚡', title:'Blitz Master', desc:'Win a 15-round Blitz match' },
+  { id:'short_winner', icon:'⏱️', title:'Quick Draw', desc:'Win a Short Match' }
 ];
 
 function unlockAchievement(id){
@@ -911,6 +1022,8 @@ function buyGolden(rank){
   if(profile.coins < GOLDEN_COST){ sfxLose(); alert('Not enough coins. You need '+GOLDEN_COST+'.'); return; }
   profile.coins -= GOLDEN_COST;
   profile.ownedGolden.push(rank);
+  unlockAchievement('gilded');
+  if(profile.ownedGolden.length>=10) unlockAchievement('gold_rush');
   saveProfile();
   sfxCoin();
   refreshTopbar();
@@ -922,6 +1035,7 @@ function buyColorful(rank){
   if(profile.gems < COLORFUL_COST){ sfxLose(); alert('Not enough gems. You need '+COLORFUL_COST+'.'); return; }
   profile.gems -= COLORFUL_COST;
   profile.ownedColorful.push(rank);
+  unlockAchievement('shimmer');
   saveProfile();
   sfxCoin();
   refreshTopbar();
@@ -996,6 +1110,7 @@ function buyFrame(id){
 }
 function equipFrame(id){
   profile.equippedFrame = id;
+  if(profile.ownedFrames.length>=3) unlockAchievement('fully_framed');
   saveProfile();
   applyFrame();
   refreshTopbar();
@@ -1003,7 +1118,7 @@ function equipFrame(id){
 }
 function applyFrame(){
   const frame = FRAME_STYLES.find(s=>s.id===profile.equippedFrame) || FRAME_STYLES[0];
-  ['tb-avatar','profile-avatar'].forEach(id=>{
+  ['tb-avatar','profile-avatar','arena-p1-avatar'].forEach(id=>{
     const el = document.getElementById(id);
     if(!el) return;
     FRAME_STYLES.forEach(s=> el.classList.remove(s.cls));
@@ -1038,10 +1153,46 @@ function buyAvatar(id){
 }
 function equipAvatar(id){
   profile.equippedAvatar = id;
+  if(id !== 'avatar-01') unlockAchievement('new_look');
   saveProfile();
   refreshTopbar();
   refreshProfileScreen();
   renderAvatarShop();
+}
+
+/* ---------------- TUTORIAL ---------------- */
+const TUTORIAL_STEPS = [
+  { icon:'👑', title:'Welcome to RWA Showdown!', text:'52 warriors. One deck. Every card has a chance.' },
+  { icon:'🎴', title:'How to Play', text:"Each round, call a category from your card — Rank, Height, Weight, Matches, Biceps, or Chest." },
+  { icon:'⚖️', title:'Higher Wins… Mostly', text:'Every category is won by the higher number — except Rank, where LOWER wins (Rank #1 beats Rank #52).' },
+  { icon:'🏆', title:'Collect Everything', text:"Win rounds to take your rival's cards. Collect the whole deck to win the match!" },
+  { icon:'🎁', title:'Make It Yours', text:'Earn coins & gems, unlock Golden cards, customize your look, and come back daily for rewards.' }
+];
+let tutorialStep = 0;
+function showTutorialIfNeeded(){
+  if(localStorage.getItem('rwa_tutorial_seen_v1')) return;
+  tutorialStep = 0;
+  renderTutorialStep();
+  document.getElementById('tutorial-modal').classList.add('show');
+}
+function renderTutorialStep(){
+  const s = TUTORIAL_STEPS[tutorialStep];
+  document.getElementById('tut-icon').textContent = s.icon;
+  document.getElementById('tut-title').textContent = s.title;
+  document.getElementById('tut-text').textContent = s.text;
+  document.getElementById('tut-next-btn').textContent = (tutorialStep === TUTORIAL_STEPS.length-1) ? "LET'S PLAY!" : 'NEXT';
+  const dots = document.getElementById('tut-dots');
+  dots.innerHTML = TUTORIAL_STEPS.map((_,i)=> '<span class="'+(i===tutorialStep?'active':'')+'"></span>').join('');
+}
+function tutorialNext(){
+  sfxTap();
+  if(tutorialStep < TUTORIAL_STEPS.length-1){ tutorialStep++; renderTutorialStep(); }
+  else tutorialSkip();
+}
+function tutorialSkip(){
+  localStorage.setItem('rwa_tutorial_seen_v1','1');
+  document.getElementById('tutorial-modal').classList.remove('show');
+  checkDailyLogin();
 }
 
 /* ---------------- DAILY LOGIN / STREAK ---------------- */
@@ -1068,6 +1219,8 @@ function checkDailyLogin(){
     profile.loginStreak = 1;
   }
   profile.lastLoginDate = today;
+  if(profile.loginStreak>=3) unlockAchievement('streak_3');
+  if(profile.loginStreak>=7) unlockAchievement('streak_7');
 
   const coins = randInt(100,200);
   const gems = randInt(2,5);
@@ -1104,11 +1257,14 @@ function openDailyBox(){
   if(r.goldenPick!=null && !profile.ownedGolden.includes(r.goldenPick)){
     profile.ownedGolden.push(r.goldenPick);
     goldenCard = MASTER_DECK.find(c=>c.rank===r.goldenPick);
+    unlockAchievement('gilded');
+    if(profile.ownedGolden.length>=10) unlockAchievement('gold_rush');
   }
   let colorfulCard = null;
   if(r.colorfulPick!=null && !profile.ownedColorful.includes(r.colorfulPick)){
     profile.ownedColorful.push(r.colorfulPick);
     colorfulCard = MASTER_DECK.find(c=>c.rank===r.colorfulPick);
+    unlockAchievement('shimmer');
   }
   profile.dailyPending = null;
   saveProfile();
@@ -1149,14 +1305,20 @@ function showScreen(id){
 }
 
 let pendingMode = 'ai';
+let pendingDifficulty = 'normal';
 function selectModeAndPlay(mode){
   pendingMode = mode;
+  if(mode === 'ai'){ showScreen('difficulty'); }
+  else { showScreen('length'); }
+}
+function selectDifficultyAndContinue(diff){
+  pendingDifficulty = diff;
   showScreen('length');
 }
 
 /* ---------------- GAME STATE ---------------- */
 let state = {
-  mode: null, matchLength: 'full', roundsPlayed: 0, p1Deck: [], p2Deck: [], pot: [], turn: 1,
+  mode: null, matchLength: 'full', aiDifficulty: 'normal', roundsPlayed: 0, p1Deck: [], p2Deck: [], pot: [], turn: 1,
   awaitingReveal: false, gameOver: false, p1RoundWins: 0, p2RoundWins: 0
 };
 
@@ -1169,11 +1331,14 @@ function shuffle(arr){
 function startGameWithLength(length){
   state.matchLength = length;
   const mode = pendingMode;
-  document.getElementById('arena-p2-name').textContent = mode==='ai' ? 'AI Opponent' : 'Player 2';
+  state.aiDifficulty = pendingDifficulty;
+  const diffTag = mode==='ai' ? {easy:' (Easy)', normal:' (Normal)', hard:' (Hard)'}[pendingDifficulty] : '';
+  document.getElementById('arena-p2-name').textContent = mode==='ai' ? ('AI Opponent'+diffTag) : 'Player 2';
   document.getElementById('arena-p2-avatar').textContent = mode==='ai' ? '🤖' : '🙂';
   document.getElementById('p2-label').textContent = mode==='ai' ? 'Rival Card' : "Player 2's Card";
   document.getElementById('arena-p1-name').textContent = profile.name;
   document.getElementById('arena-p1-avatar-img').src = profile.equippedAvatar + '.jpg';
+  applyFrame();
   state.mode = mode;
   startGame();
 }
@@ -1250,13 +1415,23 @@ function aiPick(aiCard){
   // Compare this card's percentile rank (vs the whole 52-card deck) across every
   // category on equal footing, so the AI picks whatever it's genuinely strongest
   // in — not just whichever stat happens to have the biggest raw numbers.
+  const difficulty = state.aiDifficulty || 'normal';
+
+  if(difficulty === 'easy'){
+    // Mostly random — occasionally still plays smart, but frequently misses its best option.
+    if(Math.random() < 0.7){
+      playCategory(CATEGORIES[Math.floor(Math.random()*CATEGORIES.length)].key);
+      return;
+    }
+  }
+
   let best=null, bestScore=-Infinity;
   CATEGORIES.forEach(cat=>{
     const val = cat.getVal(aiCard);
     const { min, max } = CATEGORY_STATS[cat.key];
     const range = (max - min) || 1;
     let norm = cat.lowerWins ? (max - val) / range : (val - min) / range; // 0..1, higher = better for AI
-    norm += (Math.random() - 0.5) * 0.06; // small jitter so it isn't robotically predictable
+    if(difficulty !== 'hard') norm += (Math.random() - 0.5) * 0.06; // jitter — Hard skips this, always optimal
     if(norm > bestScore){ bestScore = norm; best = cat.key; }
   });
   playCategory(best);
@@ -1358,6 +1533,8 @@ function endGame(){
     coinsEarned = 50; xpEarned = 100; profile.gems += 5;
     unlockAchievement('first_win');
     if(state.p2RoundWins===0) unlockAchievement('flawless');
+    if(state.matchLength==='blitz15') unlockAchievement('blitz_winner');
+    if(state.matchLength==='short') unlockAchievement('short_winner');
   } else {
     coinsEarned = 10; xpEarned = 20;
   }
@@ -1791,13 +1968,44 @@ document.addEventListener('pointerdown', function firstGesture(){
   document.removeEventListener('pointerdown', firstGesture);
 }, {once:true});
 
+/* ---------------- PWA / SERVICE WORKER ---------------- */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+
+/* ---------------- SPLASH SCREEN ---------------- */
+function runSplashScreen(){
+  const tips = ['Loading warriors…','Shuffling the 52-card deck…','Polishing the gold…','Warming up the ring…','Almost ready…'];
+  const fill = document.getElementById('splash-bar-fill');
+  const tip = document.getElementById('splash-tip');
+  const splash = document.getElementById('splash-screen');
+  let pct = 0, tipIdx = 0;
+  const tick = setInterval(()=>{
+    pct = Math.min(100, pct + Math.random()*18 + 6);
+    fill.style.width = pct + '%';
+    const newTipIdx = Math.min(tips.length-1, Math.floor(pct/100*tips.length));
+    if(newTipIdx !== tipIdx){ tipIdx = newTipIdx; tip.textContent = tips[tipIdx]; }
+    if(pct >= 100){
+      clearInterval(tick);
+      setTimeout(()=>{ splash.classList.add('hide'); }, 250);
+    }
+  }, 220);
+}
+runSplashScreen();
+
 /* ---------------- INIT ---------------- */
 refreshTopbar();
 applyFrame();
 applyCardBackSkin();
 initMenuHero3D();
 initCustomPlaylist();
-checkDailyLogin();
+if(localStorage.getItem('rwa_tutorial_seen_v1')){
+  checkDailyLogin();
+} else {
+  showTutorialIfNeeded();
+}
 </script>
 </body>
 </html>
