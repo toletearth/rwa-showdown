@@ -95,12 +95,14 @@ body.hide-topbar .topbar-app{ display:none; }
 .btn + .btn{ margin-top:10px; }
 
 /* MAIN MENU */
-.menu-hero{ position:relative; margin:0 -14px; height:210px; overflow:hidden; }
+.menu-hero{ position:relative; margin:0 -14px; height:230px; overflow:hidden; }
 .menu-hero img{ width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
 .menu-hero-fade{ position:absolute; inset:0; background:linear-gradient(to bottom, rgba(11,12,15,0.1) 35%, var(--bg) 96%); }
-.menu3d-wrap{ position:absolute; left:0; top:0; width:46%; height:100%; z-index:3; touch-action:none; }
+.menu3d-wrap{ position:absolute; left:0; top:0; width:42%; height:100%; z-index:3; touch-action:none; }
 .menu3d-wrap canvas{ width:100% !important; height:100% !important; display:block; }
-.menu3d-caption{ position:absolute; bottom:10px; left:0; width:46%; text-align:center; z-index:4; font-size:9.5px; letter-spacing:1.5px; color:var(--gold); text-shadow:0 1px 4px rgba(0,0,0,0.8); opacity:0.85; }
+.menu3d-caption{ position:absolute; bottom:12px; left:10px; z-index:4; font-size:9px; letter-spacing:1.2px; color:var(--gold); background:rgba(0,0,0,0.6); padding:3px 8px; border-radius:10px; }
+.menu-logo-wrap{ position:absolute; right:0; top:0; width:58%; height:100%; z-index:2; display:flex; align-items:center; justify-content:center; padding:10px 10px 10px 4px; }
+.menu-logo-wrap img{ width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 4px 16px rgba(0,0,0,0.5)); }
 .menu-brand{ text-align:center; margin-top:-46px; position:relative; z-index:2; }
 .brand-big{ font-family:'Anton',sans-serif; font-size:58px; color:var(--gold); text-shadow:0 0 24px rgba(212,167,44,0.45); letter-spacing:2px; line-height:1; }
 .brand-sub{ font-size:12px; letter-spacing:4px; color:var(--off); margin-top:2px; }
@@ -367,13 +369,9 @@ body.hide-topbar .topbar-app{ display:none; }
       <div class="menu-hero-fade"></div>
       <div class="menu3d-wrap" id="menu3d-wrap"></div>
       <div class="menu3d-caption">STEEL VIPER · #11</div>
+      <div class="menu-logo-wrap"><img src="rwa-logo.jpg" alt="RWA — Ring Warriors Alliance"></div>
     </div>
-    <div class="menu-brand">
-      <div class="brand-big">RWA</div>
-      <div class="brand-sub">RING WARRIORS ALLIANCE</div>
-      <div class="brand-tagline">FIGHT ★ COLLECT ★ CONQUER</div>
-    </div>
-    <div class="menu-buttons">
+    <div class="menu-buttons" style="margin-top:20px;">
       <button class="btn" onclick="showScreen('mode')">⚔ PLAY GAME</button>
       <button class="btn ghost" onclick="showScreen('collection')">🎴 MY COLLECTION</button>
       <button class="btn ghost" onclick="showScreen('shop')">🛒 SHOP</button>
