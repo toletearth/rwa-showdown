@@ -223,11 +223,11 @@ body.hide-topbar .topbar-app{ display:none; }
 /* Locked ("Silver") state: character art stays full color; a bronze frame overlay
    covers just the border area, hinting at the gold that's underneath once unlocked. */
 .silver-badge{ position:absolute; bottom:5px; left:5px; background:rgba(0,0,0,0.75); color:#c9d1d9; font-size:8.5px; font-weight:700; letter-spacing:0.3px; padding:2px 5px; border-radius:4px; }
-.silver-film{ position:absolute; inset:0; background:rgba(205,210,218,0.15); pointer-events:none; display:none; }
+.silver-film{ position:absolute; inset:0; background:rgba(205,210,218,0.35); pointer-events:none; display:none; }
 .silver-film.show{ display:block; }
 .foil-overlay{
   position:absolute; inset:0; pointer-events:none;
-  background: linear-gradient(115deg, transparent 15%, rgba(255,0,170,0.45) 30%, rgba(0,255,220,0.45) 45%, rgba(255,225,0,0.45) 60%, transparent 80%);
+  background: linear-gradient(115deg, transparent 15%, rgba(255,0,170,0.45) 30%, rgba(0,255,220,0.45) 45%, rgba(255,225,0,0.45) 60%, transparent 60%);
   background-size:250% 250%;
   mix-blend-mode: color-dodge;
   animation: foilShift 3.5s linear infinite;
